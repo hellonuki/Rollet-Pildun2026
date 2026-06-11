@@ -129,19 +129,17 @@
 </head>
 <body class="bg-pitch-dark text-white min-h-screen flex flex-col font-body-md stadium-bg">
 
-<nav class="bg-pitch-dark/90 backdrop-blur-md shadow-lg sticky top-0 z-50 w-full border-b border-white/10">
+<nav class="bg-pitch-dark shadow-lg sticky top-0 z-50 w-full border-b border-white/10">
     <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-7xl mx-auto h-20">
-        <a href="index.html" class="font-fifa font-black text-prestige-gold hover:text-white transition-colors flex items-center gap-3 text-2xl tracking-tighter">
+        <a href="index.html" class="font-[Outfit] font-black text-prestige-gold hover:text-white transition-colors flex items-center gap-3 text-2xl tracking-tighter">
             <span class="material-symbols-outlined text-3xl">public</span>
             FIFA WORLD CUP™
         </a>
         <div class="hidden md:flex items-center gap-8">
-            <a class="font-button text-white border-b-2 border-prestige-gold pb-1 font-bold cursor-pointer transition-all duration-200" href="index.html">Official Draw</a>
-            <a class="font-button text-white/70 hover:text-white font-semibold transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
-            <a class="font-button text-white/70 hover:text-white font-semibold transition-colors cursor-pointer" href="result.html">Draw Ledger</a>
-        </div>
-        <div class="flex items-center gap-4">
-            <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-white text-2xl cursor-pointer">menu</button>
+            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="index.html">Official Draw</a>
+            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
+            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="result.html">Draw Ledger</a>
+            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="standing.html">Tournament Standings</a>
         </div>
     </div>
 </nav>
@@ -254,40 +252,48 @@ Alex Johnson..."></textarea>
 </div>
 
 <script>
-    // Base fallback database (in case master isn't built)
+    // --- INTEGRASI AUDIO MUSIK PIALA DUNIA (UPGRADE) ---
+    // Menggunakan instrumen fanfare sepak bola megah berdurasi panjang
+    const worldCupTheme = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'); 
+    const rollSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2006/2006-600.wav'); // Sound rolling drum
+    const fanfareSuccess = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-600.wav'); // Fanfare terompet sukses
+
+    // Loop & Volume Settings
+    worldCupTheme.loop = true;
+    worldCupTheme.volume = 0.35;
+    rollSound.volume = 0.6;
+    fanfareSuccess.volume = 0.5;
+
+    let isMuted = false;
+
+    // Base fallback database (48 Negara)
     const baseTeams = [
-    // AFC (9)
-    { name: "Australia", abbr: "AUS", flag: "🇦🇺", conf: "AFC" }, { name: "Iran", abbr: "IRN", flag: "🇮🇷", conf: "AFC" },
-    { name: "Japan", abbr: "JPN", flag: "🇯🇵", conf: "AFC" }, { name: "Jordan", abbr: "JOR", flag: "🇯🇴", conf: "AFC" },
-    { name: "South Korea", abbr: "KOR", flag: "🇰🇷", conf: "AFC" }, { name: "Qatar", abbr: "QAT", flag: "🇶🇦", conf: "AFC" },
-    { name: "Saudi Arabia", abbr: "KSA", flag: "🇸🇦", conf: "AFC" }, { name: "Uzbekistan", abbr: "UZB", flag: "🇺🇿", conf: "AFC" },
-    { name: "Iraq", abbr: "IRQ", flag: "🇮🇶", conf: "AFC" },
-    // CAF (10)
-    { name: "Algeria", abbr: "ALG", flag: "🇩🇿", conf: "CAF" }, { name: "Cape Verde", abbr: "CPV", flag: "🇨🇻", conf: "CAF" },
-    { name: "Ivory Coast", abbr: "CIV", flag: "🇨🇮", conf: "CAF" }, { name: "Egypt", abbr: "EGY", flag: "🇪🇬", conf: "CAF" },
-    { name: "Ghana", abbr: "GHA", flag: "🇬🇭", conf: "CAF" }, { name: "Morocco", abbr: "MAR", flag: "🇲🇦", conf: "CAF" },
-    { name: "Senegal", abbr: "SEN", flag: "🇸🇳", conf: "CAF" }, { name: "South Africa", abbr: "RSA", flag: "🇿🇦", conf: "CAF" },
-    { name: "Tunisia", abbr: "TUN", flag: "🇹🇳", conf: "CAF" }, { name: "DR Congo", abbr: "COD", flag: "🇨🇩", conf: "CAF" },
-    // CONCACAF (6)
-    { name: "Canada", abbr: "CAN", flag: "🇨🇦", conf: "CONCACAF" }, { name: "Mexico", abbr: "MEX", flag: "🇲🇽", conf: "CONCACAF" },
-    { name: "USA", abbr: "USA", flag: "🇺🇸", conf: "CONCACAF" }, { name: "Curacao", abbr: "CUW", flag: "🇨🇼", conf: "CONCACAF" },
-    { name: "Haiti", abbr: "HAI", flag: "🇭🇹", conf: "CONCACAF" }, { name: "Panama", abbr: "PAN", flag: "🇵🇦", conf: "CONCACAF" },
-    // CONMEBOL (6)
-    { name: "Argentina", abbr: "ARG", flag: "🇦🇷", conf: "CONMEBOL" }, { name: "Brazil", abbr: "BRA", flag: "🇧🇷", conf: "CONMEBOL" },
-    { name: "Colombia", abbr: "COL", flag: "🇨🇴", conf: "CONMEBOL" }, { name: "Ecuador", abbr: "ECU", flag: "🇪🇨", conf: "CONMEBOL" },
-    { name: "Paraguay", abbr: "PAR", flag: "🇵🇾", conf: "CONMEBOL" }, { name: "Uruguay", abbr: "URU", flag: "🇺🇾", conf: "CONMEBOL" },
-    // OFC (1)
-    { name: "New Zealand", abbr: "NZL", flag: "🇳🇿", conf: "OFC" },
-    // UEFA (16)
-    { name: "Austria", abbr: "AUT", flag: "🇦🇹", conf: "UEFA" }, { name: "Belgium", abbr: "BEL", flag: "🇧🇪", conf: "UEFA" },
-    { name: "Bosnia and Herzegovina", abbr: "BIH", flag: "🇧🇦", conf: "UEFA" }, { name: "Croatia", abbr: "CRO", flag: "🇭🇷", conf: "UEFA" },
-    { name: "Czech Republic", abbr: "CZE", flag: "🇨🇿", conf: "UEFA" }, { name: "England", abbr: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA" },
-    { name: "France", abbr: "FRA", flag: "🇫🇷", conf: "UEFA" }, { name: "Germany", abbr: "GER", flag: "🇩🇪", conf: "UEFA" },
-    { name: "Netherlands", abbr: "NED", flag: "🇳🇱", conf: "UEFA" }, { name: "Norway", abbr: "NOR", flag: "🇳🇴", conf: "UEFA" },
-    { name: "Portugal", abbr: "POR", flag: "🇵🇹", conf: "UEFA" }, { name: "Scotland", abbr: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA" },
-    { name: "Spain", abbr: "ESP", flag: "🇪🇸", conf: "UEFA" }, { name: "Sweden", abbr: "SWE", flag: "🇸🇪", conf: "UEFA" },
-    { name: "Switzerland", abbr: "SUI", flag: "🇨🇭", conf: "UEFA" }, { name: "Turkey", abbr: "TUR", flag: "🇹🇷", conf: "UEFA" }
-];
+        { name: "Australia", abbr: "AUS", flag: "🇦🇺", conf: "AFC" }, { name: "Iran", abbr: "IRN", flag: "🇮🇷", conf: "AFC" },
+        { name: "Japan", abbr: "JPN", flag: "🇯🇵", conf: "AFC" }, { name: "Jordan", abbr: "JOR", flag: "🇯🇴", conf: "AFC" },
+        { name: "South Korea", abbr: "KOR", flag: "🇰🇷", conf: "AFC" }, { name: "Qatar", abbr: "QAT", flag: "🇶🇦", conf: "AFC" },
+        { name: "Saudi Arabia", abbr: "KSA", flag: "🇸🇦", conf: "AFC" }, { name: "Uzbekistan", abbr: "UZB", flag: "🇺🇿", conf: "AFC" },
+        { name: "Iraq", abbr: "IRQ", flag: "🇮🇶", conf: "AFC" },
+        { name: "Algeria", abbr: "ALG", flag: "🇩🇿", conf: "CAF" }, { name: "Cape Verde", abbr: "CPV", flag: "🇨🇻", conf: "CAF" },
+        { name: "Ivory Coast", abbr: "CIV", flag: "🇨🇮", conf: "CAF" }, { name: "Egypt", abbr: "EGY", flag: "🇪🇬", conf: "CAF" },
+        { name: "Ghana", abbr: "GHA", flag: "🇬🇭", conf: "CAF" }, { name: "Morocco", abbr: "MAR", flag: "🇲🇦", conf: "CAF" },
+        { name: "Senegal", abbr: "SEN", flag: "🇸🇳", conf: "CAF" }, { name: "South Africa", abbr: "RSA", flag: "🇿🇦", conf: "CAF" },
+        { name: "Tunisia", abbr: "TUN", flag: "🇹🇳", conf: "CAF" }, { name: "DR Congo", abbr: "COD", flag: "🇨🇩", conf: "CAF" },
+        { name: "Canada", abbr: "CAN", flag: "🇨🇦", conf: "CONCACAF" }, { name: "Mexico", abbr: "MEX", flag: "🇲🇽", conf: "CONCACAF" },
+        { name: "USA", abbr: "USA", flag: "🇺🇸", conf: "CONCACAF" }, { name: "Curacao", abbr: "CUW", flag: "🇨🇼", conf: "CONCACAF" },
+        { name: "Haiti", abbr: "HAI", flag: "🇭🇹", conf: "CONCACAF" }, { name: "Panama", abbr: "PAN", flag: "🇵🇦", conf: "CONCACAF" },
+        { name: "Argentina", abbr: "ARG", flag: "🇦🇷", conf: "CONMEBOL" }, { name: "Brazil", abbr: "BRA", flag: "🇧🇷", conf: "CONMEBOL" },
+        { name: "Colombia", abbr: "COL", flag: "🇨🇴", conf: "CONMEBOL" }, { name: "Ecuador", abbr: "ECU", flag: "🇪🇨", conf: "CONMEBOL" },
+        { name: "Paraguay", abbr: "PAR", flag: "🇵🇾", conf: "CONMEBOL" }, { name: "Uruguay", abbr: "URU", flag: "🇺🇾", conf: "CONMEBOL" },
+        { name: "New Zealand", abbr: "NZL", flag: "🇳🇿", conf: "OFC" },
+        { name: "Austria", abbr: "AUT", flag: "🇦🇹", conf: "UEFA" }, { name: "Belgium", abbr: "BEL", flag: "🇧🇪", conf: "UEFA" },
+        { name: "Bosnia and Herzegovina", abbr: "BIH", flag: "🇧🇦", conf: "UEFA" }, { name: "Croatia", abbr: "CRO", flag: "🇭🇷", conf: "UEFA" },
+        { name: "Czech Republic", abbr: "CZE", flag: "🇨🇿", conf: "UEFA" }, { name: "England", abbr: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA" },
+        { name: "France", abbr: "FRA", flag: "🇫🇷", conf: "UEFA" }, { name: "Germany", abbr: "GER", flag: "🇩🇪", conf: "UEFA" },
+        { name: "Netherlands", abbr: "NED", flag: "🇳🇱", conf: "UEFA" }, { name: "Norway", abbr: "NOR", flag: "🇳🇴", conf: "UEFA" },
+        { name: "Portugal", abbr: "POR", flag: "🇵🇹", conf: "UEFA" }, { name: "Scotland", abbr: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA" },
+        { name: "Spain", abbr: "ESP", flag: "🇪🇸", conf: "UEFA" }, { name: "Sweden", abbr: "SWE", flag: "🇸🇪", conf: "UEFA" },
+        { name: "Switzerland", abbr: "SUI", flag: "🇨🇭", conf: "UEFA" }, { name: "Turkey", abbr: "TUR", flag: "🇹🇷", conf: "UEFA" }
+    ];
 
     let state = {
         participants: [],
@@ -313,6 +319,8 @@ Alex Johnson..."></textarea>
     const resultCountryAbbr = document.getElementById('resultCountryAbbr');
     const resultCountryName = document.getElementById('resultCountryName');
     const nextDrawBtn = document.getElementById('nextDrawBtn');
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    const musicIcon = document.getElementById('musicIcon');
 
     // Mobile nav
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -323,6 +331,23 @@ Alex Johnson..."></textarea>
     mobileMenuBtn.addEventListener('click', () => mobileNav.classList.remove('translate-x-full'));
     mobileNavClose.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
     mobileNavOverlay.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
+
+    // Musik Mute/Unmute Controller
+    musicToggleBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        worldCupTheme.muted = isMuted;
+        rollSound.muted = isMuted;
+        fanfareSuccess.muted = isMuted;
+        
+        if (isMuted) {
+            musicIcon.textContent = 'volume_off';
+            musicToggleBtn.classList.add('bg-error-red/20', 'text-error-red');
+        } else {
+            musicIcon.textContent = 'volume_up';
+            musicToggleBtn.classList.remove('bg-error-red/20', 'text-error-red');
+            worldCupTheme.play().catch(() => {});
+        }
+    });
 
     // Textarea counter
     participantsInput.addEventListener('input', () => {
@@ -344,6 +369,10 @@ Alex Johnson..."></textarea>
             state = JSON.parse(savedState);
             if (state.participants.length > 0 || state.drawHistory.length > 0) {
                 showDrawingPhase();
+                // Trigger play musik setelah refresh halaman jika pengguna mengklik layar pertama kali
+                document.addEventListener('click', () => {
+                    if(!isMuted) worldCupTheme.play().catch(() => {});
+                }, { once: true });
             } else {
                 showSetupPhase();
             }
@@ -362,6 +391,8 @@ Alex Johnson..."></textarea>
             localStorage.removeItem('drawState');
             state = { participants: [], availableCountries: [], drawHistory: [] };
             cancelAnimationFrame(animationId);
+            worldCupTheme.pause();
+            worldCupTheme.currentTime = 0;
             showSetupPhase();
         }
     }
@@ -376,7 +407,6 @@ Alex Johnson..."></textarea>
             openCapsuleBtn.classList.remove('pulse-gold', 'bg-vibrant-blue', 'hover:bg-fifa-blue');
             openCapsuleBtn.classList.add('bg-white/20', 'text-white/50');
             
-            // Transform next btn to ledger btn if empty
             nextDrawBtn.innerHTML = '<span class="material-symbols-outlined">receipt_long</span> View Final Ledger';
             nextDrawBtn.onclick = () => window.location.href = 'result.html';
         } else {
@@ -420,6 +450,12 @@ Alex Johnson..."></textarea>
         state.participants = lines;
         state.availableCountries = JSON.parse(JSON.stringify(masterPool));
         state.drawHistory = [];
+        
+        // Memulai pemutaran musik tema World Cup utama
+        if(!isMuted) {
+            worldCupTheme.play().catch(e => console.log("Audio play blocked by browser:", e));
+        }
+
         saveState();
         showDrawingPhase();
     });
@@ -462,13 +498,11 @@ Alex Johnson..."></textarea>
         if(b.opacity <= 0) return;
         ctx.globalAlpha = b.opacity;
 
-        // Shadow
         ctx.beginPath();
         ctx.arc(b.x + 4, b.y + 4, b.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(0,0,0,0.4)';
         ctx.fill();
 
-        // White base
         const grad = ctx.createRadialGradient(b.x - b.radius/3, b.y - b.radius/3, b.radius/4, b.x, b.y, b.radius);
         grad.addColorStop(0, '#ffffff');
         grad.addColorStop(0.8, '#f0f0f0');
@@ -479,18 +513,15 @@ Alex Johnson..."></textarea>
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // Details
         ctx.save();
         ctx.translate(b.x, b.y);
         ctx.textAlign = 'center';
         
-        // Only rotate if not the winning settling ball
         if(b !== winningBall || drawPhase === 'idle') {
             const angle = (b.vx + b.vy) * 0.1;
             ctx.rotate(angle);
         }
 
-        // Draw Flag & Abbr
         ctx.textBaseline = 'bottom';
         ctx.font = `${b.radius * 0.9}px Inter`;
         ctx.fillText(b.country.flag, 0, b.radius * 0.1);
@@ -502,7 +533,6 @@ Alex Johnson..."></textarea>
         
         ctx.restore();
 
-        // Glass reflection
         ctx.beginPath();
         ctx.arc(b.x - b.radius/3, b.y - b.radius/3, b.radius/3, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(255,255,255,0.6)';
@@ -511,20 +541,13 @@ Alex Johnson..."></textarea>
         ctx.globalAlpha = 1;
     }
 
-    function easeOutBack(x) {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    }
-
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (drawPhase === 'idle') {
-            // Normal bouncing physics
             for (let i = 0; i < balls.length; i++) {
                 let b = balls[i];
-                b.vy += 0.05; // Light gravity
+                b.vy += 0.05; 
                 b.x += b.vx;
                 b.y += b.vy;
 
@@ -546,7 +569,6 @@ Alex Johnson..."></textarea>
             }
         } 
         else if (drawPhase === 'settling') {
-            // Fade out non-winning balls and drop them
             balls.forEach(b => {
                 if (b !== winningBall) {
                     b.y += 10;
@@ -555,7 +577,6 @@ Alex Johnson..."></textarea>
                 }
             });
 
-            // Move winning ball to center and scale up
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             
@@ -564,20 +585,16 @@ Alex Johnson..."></textarea>
             
             winningBall.x += winningBall.vx;
             winningBall.y += winningBall.vy;
-            
-            // Expand size smoothly
             winningBall.radius += (80 - winningBall.radius) * 0.1;
             
             drawBall(winningBall);
 
-            // Once it reaches center and size, trigger pop
             if (Math.abs(centerX - winningBall.x) < 2 && Math.abs(centerY - winningBall.y) < 2 && Math.abs(80 - winningBall.radius) < 2) {
                 drawPhase = 'popping';
                 triggerResultOverlay();
             }
         } 
         else if (drawPhase === 'popping') {
-            // Ball bursts open (fades out while expanding rapidly)
             winningBall.radius += 5;
             winningBall.opacity = Math.max(0, winningBall.opacity - 0.1);
             if(winningBall.opacity > 0) {
@@ -600,35 +617,33 @@ Alex Johnson..."></textarea>
     openCapsuleBtn.addEventListener('click', () => {
         if(isDrawing || state.participants.length === 0) return;
         
-        // Mulai animasi Shake pada kontainer wadah
         const drawContainer = document.getElementById('drawContainer');
         drawContainer.classList.add('shake-it');
+        
+        // Memutar efek suara guncangan wadah drum roll & mengecilkan volume musik utama
+        if(!isMuted) {
+            rollSound.currentTime = 0;
+            rollSound.play().catch(() => {});
+            worldCupTheme.volume = 0.12; 
+        }
         
         isDrawing = true;
         openCapsuleBtn.innerHTML = '<span class="material-symbols-outlined text-3xl animate-spin">sync</span> EXTRACTING CAPSULE...';
         openCapsuleBtn.classList.remove('pulse-gold');
         openCapsuleBtn.disabled = true;
 
-        // Berikan delay guncangan selama 2 detik sebelum menentukan pemenang
         setTimeout(() => {
             drawContainer.classList.remove('shake-it');
+            rollSound.pause(); 
 
-            // Jalankan logika penarikan acak
             const pIndex = Math.floor(Math.random() * state.participants.length);
             const cIndex = Math.floor(Math.random() * state.availableCountries.length);
 
             const participant = state.participants[pIndex];
             const country = state.availableCountries[cIndex];
 
-            // Cari objek bola fisik pendukung negara tersebut
-            winningBall = balls.find(b => b.country.name === country.name);
-            
-            if(!winningBall) {
-                winningBall = balls[0]; 
-                winningBall.country = country;
-            }
+            winningBall = balls.find(b => b.country.name === country.name) || balls[0];
 
-            // Update array data state
             state.participants.splice(pIndex, 1);
             state.availableCountries.splice(cIndex, 1);
             state.drawHistory.push({
@@ -637,22 +652,25 @@ Alex Johnson..."></textarea>
                 date: new Date().toISOString()
             });
 
-            // Isi teks ke elemen UI overlay
             resultParticipantName.textContent = participant;
             resultCountryFlag.textContent = country.flag;
             resultCountryAbbr.textContent = country.abbr;
             resultCountryName.textContent = country.name;
 
             saveState();
-
-            // Masuk ke fase animasi meluncur ke tengah
             drawPhase = 'settling';
         }, 2000);
     });
 
     function triggerResultOverlay() {
         drawResultOverlay.classList.remove('hidden');
-        // Smoothly fade in overlay exactly as ball bursts
+        
+        // Memutar suara terompet selebrasi (fanfare) saat hasil muncul
+        if(!isMuted) {
+            fanfareSuccess.currentTime = 0;
+            fanfareSuccess.play().catch(() => {});
+        }
+
         setTimeout(() => {
             drawResultOverlay.style.opacity = '1';
             createGoldenSparkles();
@@ -660,15 +678,18 @@ Alex Johnson..."></textarea>
     }
 
     function resetDrawView() {
+        if(!isMuted) {
+            worldCupTheme.volume = 0.35; // Kembalikan volume musik utama ke normal
+        }
         drawResultOverlay.style.opacity = '0';
         setTimeout(() => {
             drawResultOverlay.classList.add('hidden');
-            initCanvas(); // Restart physics with new available balls
-        }, 500); // Wait for fade out
+            initCanvas(); 
+        }, 500); 
     }
 
     function createGoldenSparkles() {
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 60; i++) { 
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
             sparkle.style.left = Math.random() * 100 + 'vw';
@@ -681,7 +702,6 @@ Alex Johnson..."></textarea>
     }
 
     init();
-
 </script>
 </body>
 </html>
