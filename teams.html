@@ -203,38 +203,66 @@
     // Database
     // Database yang sudah diperbarui (48 Negara Peserta WC 2026)
     const baseTeams = [
-    // AFC (9)
-    { name: "Australia", abbr: "AUS", flag: "🇦🇺", conf: "AFC" }, { name: "Iran", abbr: "IRN", flag: "🇮🇷", conf: "AFC" },
-    { name: "Japan", abbr: "JPN", flag: "🇯🇵", conf: "AFC" }, { name: "Jordan", abbr: "JOR", flag: "🇯🇴", conf: "AFC" },
-    { name: "South Korea", abbr: "KOR", flag: "🇰🇷", conf: "AFC" }, { name: "Qatar", abbr: "QAT", flag: "🇶🇦", conf: "AFC" },
-    { name: "Saudi Arabia", abbr: "KSA", flag: "🇸🇦", conf: "AFC" }, { name: "Uzbekistan", abbr: "UZB", flag: "🇺🇿", conf: "AFC" },
-    { name: "Iraq", abbr: "IRQ", flag: "🇮🇶", conf: "AFC" },
-    // CAF (10)
-    { name: "Algeria", abbr: "ALG", flag: "🇩🇿", conf: "CAF" }, { name: "Cape Verde", abbr: "CPV", flag: "🇨🇻", conf: "CAF" },
-    { name: "Ivory Coast", abbr: "CIV", flag: "🇨🇮", conf: "CAF" }, { name: "Egypt", abbr: "EGY", flag: "🇪🇬", conf: "CAF" },
-    { name: "Ghana", abbr: "GHA", flag: "🇬🇭", conf: "CAF" }, { name: "Morocco", abbr: "MAR", flag: "🇲🇦", conf: "CAF" },
-    { name: "Senegal", abbr: "SEN", flag: "🇸🇳", conf: "CAF" }, { name: "South Africa", abbr: "RSA", flag: "🇿🇦", conf: "CAF" },
-    { name: "Tunisia", abbr: "TUN", flag: "🇹🇳", conf: "CAF" }, { name: "DR Congo", abbr: "COD", flag: "🇨🇩", conf: "CAF" },
-    // CONCACAF (6)
-    { name: "Canada", abbr: "CAN", flag: "🇨🇦", conf: "CONCACAF" }, { name: "Mexico", abbr: "MEX", flag: "🇲🇽", conf: "CONCACAF" },
-    { name: "USA", abbr: "USA", flag: "🇺🇸", conf: "CONCACAF" }, { name: "Curacao", abbr: "CUW", flag: "🇨🇼", conf: "CONCACAF" },
-    { name: "Haiti", abbr: "HAI", flag: "🇭🇹", conf: "CONCACAF" }, { name: "Panama", abbr: "PAN", flag: "🇵🇦", conf: "CONCACAF" },
-    // CONMEBOL (6)
-    { name: "Argentina", abbr: "ARG", flag: "🇦🇷", conf: "CONMEBOL" }, { name: "Brazil", abbr: "BRA", flag: "🇧🇷", conf: "CONMEBOL" },
-    { name: "Colombia", abbr: "COL", flag: "🇨🇴", conf: "CONMEBOL" }, { name: "Ecuador", abbr: "ECU", flag: "🇪🇨", conf: "CONMEBOL" },
-    { name: "Paraguay", abbr: "PAR", flag: "🇵🇾", conf: "CONMEBOL" }, { name: "Uruguay", abbr: "URU", flag: "🇺🇾", conf: "CONMEBOL" },
-    // OFC (1)
-    { name: "New Zealand", abbr: "NZL", flag: "🇳🇿", conf: "OFC" },
-    // UEFA (16)
-    { name: "Austria", abbr: "AUT", flag: "🇦🇹", conf: "UEFA" }, { name: "Belgium", abbr: "BEL", flag: "🇧🇪", conf: "UEFA" },
-    { name: "Bosnia and Herzegovina", abbr: "BIH", flag: "🇧🇦", conf: "UEFA" }, { name: "Croatia", abbr: "CRO", flag: "🇭🇷", conf: "UEFA" },
-    { name: "Czech Republic", abbr: "CZE", flag: "🇨🇿", conf: "UEFA" }, { name: "England", abbr: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA" },
-    { name: "France", abbr: "FRA", flag: "🇫🇷", conf: "UEFA" }, { name: "Germany", abbr: "GER", flag: "🇩🇪", conf: "UEFA" },
-    { name: "Netherlands", abbr: "NED", flag: "🇳🇱", conf: "UEFA" }, { name: "Norway", abbr: "NOR", flag: "🇳🇴", conf: "UEFA" },
-    { name: "Portugal", abbr: "POR", flag: "🇵🇹", conf: "UEFA" }, { name: "Scotland", abbr: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA" },
-    { name: "Spain", abbr: "ESP", flag: "🇪🇸", conf: "UEFA" }, { name: "Sweden", abbr: "SWE", flag: "🇸🇪", conf: "UEFA" },
-    { name: "Switzerland", abbr: "SUI", flag: "🇨🇭", conf: "UEFA" }, { name: "Turkey", abbr: "TUR", flag: "🇹🇷", conf: "UEFA" }
-];
+        // AFC (Asia)
+        { name: "Australia", abbr: "AUS", flag: "🇦🇺", conf: "AFC", rank: "N/A" },
+        { name: "Iran", abbr: "IRN", flag: "🇮🇷", conf: "AFC", rank: "N/A" },
+        { name: "Japan", abbr: "JPN", flag: "🇯🇵", conf: "AFC", rank: "N/A" },
+        { name: "Jordan", abbr: "JOR", flag: "🇯🇴", conf: "AFC", rank: "N/A" },
+        { name: "South Korea", abbr: "KOR", flag: "🇰🇷", conf: "AFC", rank: "N/A" },
+        { name: "Qatar", abbr: "QAT", flag: "🇶🇦", conf: "AFC", rank: "N/A" },
+        { name: "Saudi Arabia", abbr: "KSA", flag: "🇸🇦", conf: "AFC", rank: "N/A" },
+        { name: "Uzbekistan", abbr: "UZB", flag: "🇺🇿", conf: "AFC", rank: "N/A" },
+        { name: "Iraq", abbr: "IRQ", flag: "🇮🇶", conf: "AFC", rank: "N/A" },
+        
+        // CAF (Afrika)
+        { name: "Algeria", abbr: "ALG", flag: "🇩🇿", conf: "CAF", rank: "N/A" },
+        { name: "Cape Verde", abbr: "CPV", flag: "🇨🇻", conf: "CAF", rank: "N/A" },
+        { name: "Ivory Coast", abbr: "CIV", flag: "🇨🇮", conf: "CAF", rank: "N/A" },
+        { name: "Egypt", abbr: "EGY", flag: "🇪🇬", conf: "CAF", rank: "N/A" },
+        { name: "Ghana", abbr: "GHA", flag: "🇬🇭", conf: "CAF", rank: "N/A" },
+        { name: "Morocco", abbr: "MAR", flag: "🇲🇦", conf: "CAF", rank: "N/A" },
+        { name: "Senegal", abbr: "SEN", flag: "🇸🇳", conf: "CAF", rank: "N/A" },
+        { name: "South Africa", abbr: "RSA", flag: "🇿🇦", conf: "CAF", rank: "N/A" },
+        { name: "Tunisia", abbr: "TUN", flag: "🇹🇳", conf: "CAF", rank: "N/A" },
+        { name: "DR Congo", abbr: "COD", flag: "🇨🇩", conf: "CAF", rank: "N/A" },
+        
+        // CONCACAF
+        { name: "Canada", abbr: "CAN", flag: "🇨🇦", conf: "CONCACAF", rank: "HOST" },
+        { name: "Mexico", abbr: "MEX", flag: "🇲🇽", conf: "CONCACAF", rank: "HOST" },
+        { name: "USA", abbr: "USA", flag: "🇺🇸", conf: "CONCACAF", rank: "HOST" },
+        { name: "Curacao", abbr: "CUW", flag: "🇨🇼", conf: "CONCACAF", rank: "N/A" },
+        { name: "Haiti", abbr: "HAI", flag: "🇭🇹", conf: "CONCACAF", rank: "N/A" },
+        { name: "Panama", abbr: "PAN", flag: "🇵🇦", conf: "CONCACAF", rank: "N/A" },
+        
+        // CONMEBOL
+        { name: "Argentina", abbr: "ARG", flag: "🇦🇷", conf: "CONMEBOL", rank: "N/A" },
+        { name: "Brazil", abbr: "BRA", flag: "🇧🇷", conf: "CONMEBOL", rank: "N/A" },
+        { name: "Colombia", abbr: "COL", flag: "🇨🇴", conf: "CONMEBOL", rank: "N/A" },
+        { name: "Ecuador", abbr: "ECU", flag: "🇪🇨", conf: "CONMEBOL", rank: "N/A" },
+        { name: "Paraguay", abbr: "PAR", flag: "🇵🇾", conf: "CONMEBOL", rank: "N/A" },
+        { name: "Uruguay", abbr: "URU", flag: "🇺🇾", conf: "CONMEBOL", rank: "N/A" },
+        
+        // OFC
+        { name: "New Zealand", abbr: "NZL", flag: "🇳🇿", conf: "OFC", rank: "N/A" },
+        
+        // UEFA
+        { name: "Austria", abbr: "AUT", flag: "🇦🇹", conf: "UEFA", rank: "N/A" },
+        { name: "Belgium", abbr: "BEL", flag: "🇧🇪", conf: "UEFA", rank: "N/A" },
+        { name: "Bosnia & Herzegovina", abbr: "BIH", flag: "🇧🇦", conf: "UEFA", rank: "N/A" },
+        { name: "Croatia", abbr: "CRO", flag: "🇭🇷", conf: "UEFA", rank: "N/A" },
+        { name: "Czech Republic", abbr: "CZE", flag: "🇨🇿", conf: "UEFA", rank: "N/A" },
+        { name: "England", abbr: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA", rank: "N/A" },
+        { name: "France", abbr: "FRA", flag: "🇫🇷", conf: "UEFA", rank: "N/A" },
+        { name: "Germany", abbr: "GER", flag: "🇩🇪", conf: "UEFA", rank: "N/A" },
+        { name: "Netherlands", abbr: "NED", flag: "🇳🇱", conf: "UEFA", rank: "N/A" },
+        { name: "Norway", abbr: "NOR", flag: "🇳🇴", conf: "UEFA", rank: "N/A" },
+        { name: "Portugal", abbr: "POR", flag: "🇵🇹", conf: "UEFA", rank: "N/A" },
+        { name: "Scotland", abbr: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA", rank: "N/A" },
+        { name: "Spain", abbr: "ESP", flag: "🇪🇸", conf: "UEFA", rank: "N/A" },
+        { name: "Sweden", abbr: "SWE", flag: "🇸🇪", conf: "UEFA", rank: "N/A" },
+        { name: "Switzerland", abbr: "SUI", flag: "🇨🇭", conf: "UEFA", rank: "N/A" },
+        { name: "Turkey", abbr: "TUR", flag: "🇹🇷", conf: "UEFA", rank: "N/A" }
+    ];
 
     // Master Pool Management
     let masterPool = [];
