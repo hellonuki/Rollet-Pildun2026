@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>SpinToCountry - Draw Results & Standings</title>
-    <meta name="description" content="View the official draw results and group standings for the 2026 FIFA World Cup." />
+    <title>SpinToCountry - Draw Ledger</title>
+    <meta name="description" content="View the official draw results for the 2026 FIFA World Cup." />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -40,110 +40,100 @@
         <div class="hidden md:flex items-center gap-8">
             <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="index.html">Official Draw</a>
             <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
-            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="result.html">Draw Ledger & Standings</a>
+            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="result.html">Draw Ledger</a>
+            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="standing.html">Tournament Standings</a>
         </div>
     </div>
 </nav>
 
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-12 py-10">
     
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-            <h1 id="pageTitle" class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Official Draw Ledger</h1>
-            <p id="pageSubtitle" class="text-outline font-medium mt-1">Daftar lengkap alokasi negara hasil undian acak peserta.</p>
-        </div>
-        
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <span class="text-sm font-bold text-primary whitespace-nowrap">Lihat Menu:</span>
-            <select id="viewModeDropdown" onchange="switchViewMode()" class="w-full sm:w-56 rounded-xl border-outline/30 font-bold text-pitch-dark bg-white shadow-sm focus:ring-vibrant-blue focus:border-vibrant-blue">
-                <option value="ledger">📋 Riwayat Hasil Draw</option>
-                <option value="standings">🏆 Standing / Klasemen Grup</option>
-            </select>
-        </div>
-    </div>
+    <header class="mb-8 border-b border-outline/10 pb-6">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full font-bold text-xs mb-3">OFFICIAL LEDGER</span>
+        <h1 class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Official Draw Results</h1>
+        <p class="text-outline font-medium mt-1">
+            Rekam jejak real-time pembagian peserta undian beserta alokasi negaranya masing-masing.
+        </p>
+    </header>
 
-    <div id="ledgerSection" class="block animate-fade-in">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="font-[Outfit] text-xl font-bold text-primary flex items-center gap-2">
-                <span class="material-symbols-outlined">assignment</span> Hasil Slot Terundi
-            </h2>
+    <div class="flex justify-between items-center border-b border-outline/5 pb-6 mb-8">
+        <h3 class="font-[Outfit] text-xl font-bold text-primary"><span id="drawCount">0</span> Pairings Recorded</h3>
+        
+        <div class="flex items-center gap-3">
+            <button id="exportCsvBtn" onclick="exportToCSV()" class="hidden flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl font-semibold text-xs hover:bg-emerald-700 transition-all active:scale-95 shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+                Export to Excel / CSV
+            </button>
+            
             <button onclick="resetDrawPool()" class="text-xs bg-error-red/10 text-error-red hover:bg-error-red hover:text-white transition-all px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 shadow-sm">
-                <span class="material-symbols-outlined text-sm">delete_forever</span> Reset Pool & Mulai Baru
+                <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                Reset Draw Pool
             </button>
         </div>
-        
-        <div id="noResults" class="hidden text-center py-20 bg-white rounded-3xl border border-outline/10 shadow-sm">
-            <span class="material-symbols-outlined text-6xl text-outline/30 mb-2">analytics</span>
-            <p class="text-outline font-semibold">Belum ada riwayat undian. Silakan lakukan draw di halaman utama.</p>
-        </div>
-
-        <div id="ledgerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
     </div>
 
-    <div id="standingsSection" class="hidden animate-fade-in">
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <h2 class="font-[Outfit] text-xl font-bold text-primary flex items-center gap-2">
-                <span class="material-symbols-outlined">military_tech</span> Klasemen Fase Grup (48 Teams)
-            </h2>
-            <p class="text-xs text-outline font-medium">Otomatis dibagi: 4 peserta per grup (Grup A - L)</p>
-        </div>
-
-        <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8"></div>
+    <div id="noResults" class="hidden text-center py-20 bg-white rounded-3xl border border-outline/10 shadow-sm">
+        <span class="material-symbols-outlined text-6xl text-outline/30 mb-2">history</span>
+        <h2 class="font-[Outfit] text-lg font-bold text-primary mb-1">No Drawings Yet</h2>
+        <p class="text-outline font-medium max-w-md mx-auto mb-6">
+            Kolam penarikan undian belum diinisialisasi. Silakan menuju ke halaman utama untuk memulai.
+        </p>
+        <a href="index.html" class="inline-flex items-center gap-2 bg-fifa-blue text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-vibrant-blue transition-all shadow-md">
+            <span class="material-symbols-outlined text-md">play_circle</span> Begin Drawing
+        </a>
     </div>
 
+    <div id="ledgerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        </div>
 </main>
 
+<footer class="bg-pitch-dark w-full py-10 px-4 md:px-12 flex flex-col items-center gap-3 mt-auto border-t border-white/5">
+    <a href="index.html" class="font-[Outfit] font-black text-prestige-gold text-lg tracking-tighter">
+        FIFA WORLD CUP™ DRAW
+    </a>
+    <p class="text-[11px] text-white/40 text-center max-w-md">
+        © 2026 SpinToCountry. All rights reserved. World Cup is a trademark of FIFA.
+    </p>
+</footer>
+
 <script>
-    const viewModeDropdown = document.getElementById('viewModeDropdown');
-    const ledgerSection = document.getElementById('ledgerSection');
-    const standingsSection = document.getElementById('standingsSection');
-    const pageTitle = document.getElementById('pageTitle');
-    const pageSubtitle = document.getElementById('pageSubtitle');
+    const ledgerGrid = document.getElementById('ledgerGrid');
+    const noResults = document.getElementById('noResults');
+    const drawCount = document.getElementById('drawCount');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
 
-    // Mengubah tampilan halaman berdasarkan dropdown
-    function switchViewMode() {
-        const selectedMode = viewModeDropdown.value;
-        if (selectedMode === 'ledger') {
-            ledgerSection.classList.remove('hidden');
-            standingsSection.classList.add('hidden');
-            pageTitle.textContent = "Official Draw Ledger";
-            pageSubtitle.textContent = "Daftar lengkap alokasi negara hasil undian acak peserta.";
-            renderLedger();
-        } else {
-            ledgerSection.classList.add('hidden');
-            standingsSection.classList.remove('hidden');
-            pageTitle.textContent = "Tournament Standings";
-            pageSubtitle.textContent = "Klasemen lengkap babak penyisihan grup Piala Dunia 2026.";
-            renderStandings();
-        }
-    }
-
-    // Fungsi Render Tampilan 1: Draw Ledger
     function renderLedger() {
-        const ledgerGrid = document.getElementById('ledgerGrid');
-        const noResults = document.getElementById('noResults');
-        ledgerGrid.innerHTML = '';
-
-        const activeDraw = localStorage.getItem('drawState');
-        if (activeDraw) {
-            const state = JSON.parse(activeDraw);
+        const savedState = localStorage.getItem('drawState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
             const history = state.drawHistory || [];
+            
+            drawCount.textContent = history.length;
 
             if (history.length > 0) {
                 noResults.classList.add('hidden');
-                history.forEach((draw, index) => {
+                exportCsvBtn.classList.remove('hidden');
+                ledgerGrid.innerHTML = '';
+                
+                // Menampilkan undian terbaru di urutan paling atas
+                history.slice().reverse().forEach((draw, index) => {
                     const card = document.createElement('div');
-                    card.className = 'bg-white p-5 rounded-2xl border border-outline/10 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group';
+                    card.className = "bg-white border border-outline/10 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden";
+                    
+                    const num = history.length - index;
+
                     card.innerHTML = `
-                        <div class="mb-4">
-                            <span class="text-[10px] bg-primary/5 text-primary px-2 py-0.5 rounded-md font-bold">SLOT #${index + 1}</span>
-                            <span class="block font-bold text-outline text-xs uppercase tracking-wider mt-2">Peserta</span>
+                        <div class="absolute top-0 right-0 bg-primary/5 text-primary font-bold text-[9px] px-2.5 py-1 rounded-bl-xl">
+                            DRAW #${num}
+                        </div>
+                        <div class="flex flex-col gap-1 mb-3">
+                            <span class="text-outline font-bold text-[10px] uppercase tracking-wider">Participant</span>
                             <h3 class="font-[Outfit] text-lg font-black text-pitch-dark group-hover:text-vibrant-blue transition-colors truncate" title="${draw.participant}">
                                 ${draw.participant}
                             </h3>
                         </div>
                         <div class="h-px w-full bg-surface-ice my-2"></div>
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-4 mt-1">
                             <span class="text-4xl drop-shadow-sm">${draw.country.flag}</span>
                             <div>
                                 <h4 class="font-[Outfit] text-md font-black text-primary leading-tight">${draw.country.name}</h4>
@@ -158,127 +148,48 @@
                 });
             } else {
                 noResults.classList.remove('hidden');
+                exportCsvBtn.classList.add('hidden');
             }
         } else {
             noResults.classList.remove('hidden');
+            exportCsvBtn.classList.add('hidden');
         }
     }
 
-    // Fungsi Render Tampilan 2: Standing / Klasemen Grup (12 Grup)
-    function renderStandings() {
-        const groupsGrid = document.getElementById('groupsGrid');
-        groupsGrid.innerHTML = '';
+    function exportToCSV() {
+        const savedState = localStorage.getItem('drawState');
+        if (!savedState) return;
 
-        const activeDraw = localStorage.getItem('drawState');
-        if (!activeDraw) {
-            groupsGrid.innerHTML = `<div class="col-span-full text-center py-10 text-outline font-bold">Belum ada data undian untuk membuat klasemen grup.</div>`;
-            return;
-        }
-
-        const state = JSON.parse(activeDraw);
+        const state = JSON.parse(savedState);
         const history = state.drawHistory || [];
+        if (history.length === 0) return;
 
-        if (history.length === 0) {
-            groupsGrid.innerHTML = `<div class="col-span-full text-center py-10 text-outline font-bold">Belum ada data undian untuk membuat klasemen grup.</div>`;
-            return;
-        }
-
-        // Nama-nama 12 Grup World Cup (A sampai L)
-        const groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-        
-        // Memecah urutan history undian ke dalam masing-masing grup (maksimal 4 tim per grup)
-        const groupsData = {};
-        groupNames.forEach(g => groupsData[g] = []);
+        let csvContent = "data:text/csv;charset=utf-8,No,Nama Peserta,Negara Terundi,Abbr,Konfederasi\n";
 
         history.forEach((draw, index) => {
-            const groupIndex = Math.floor(index / 4);
-            if (groupIndex < 12) {
-                const groupLetter = groupNames[groupIndex];
-                groupsData[groupLetter].push(draw);
-            }
+            const num = index + 1;
+            const participantName = draw.participant.replace(/,/g, " ");
+            const countryName = draw.country.name.replace(/,/g, " ");
+            csvContent += `${num},${participantName},${countryName},${draw.country.abbr},${draw.country.conf}\n`;
         });
 
-        // Loop untuk membuat tabel HTML untuk setiap Grup
-        groupNames.forEach(groupLetter => {
-            const teamsInGroup = groupsData[groupLetter];
-            
-            const groupCard = document.createElement('div');
-            groupCard.className = 'bg-white rounded-2xl border border-outline/10 shadow-sm p-5 flex flex-col';
-            
-            let tableRowsHTML = '';
-            
-            // Jika ada tim di grup ini, buat baris tabelnya
-            if (teamsInGroup.length > 0) {
-                teamsInGroup.forEach((teamData, idx) => {
-                    tableRowsHTML += `
-                        <tr class="border-b border-outline/5 hover:bg-surface-ice/50 transition-colors text-xs font-semibold">
-                            <td class="py-3 px-2 text-center text-outline font-bold">${idx + 1}</td>
-                            <td class="py-3 px-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xl">${teamData.country.flag}</span>
-                                    <div class="truncate">
-                                        <span class="font-bold text-pitch-dark block truncate max-w-[120px] sm:max-w-[180px]">${teamData.country.name}</span>
-                                        <span class="text-[10px] text-outline block truncate">Man: ${teamData.participant}</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0-0</td>
-                            <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                            <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">0</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                // Jika slot grup belum terisi hasil kocokan
-                tableRowsHTML = `
-                    <tr>
-                        <td colspan="9" class="py-8 text-center text-xs font-bold text-outline/40 uppercase">Belum terisi slot undian</td>
-                    </tr>
-                `;
-            }
-
-            groupCard.innerHTML = `
-                <div class="bg-primary text-white px-4 py-2.5 rounded-xl font-[Outfit] font-black tracking-wide text-sm flex justify-between items-center mb-3 shadow-inner">
-                    <span>GRUP ${groupLetter}</span>
-                    <span class="text-[10px] text-prestige-gold uppercase tracking-widest font-bold">FIFA World Cup</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-outline/10 text-[10px] font-bold text-outline uppercase tracking-wider bg-surface-ice/30">
-                                <th class="py-2 px-2 text-center w-8">Pos</th>
-                                <th class="py-2 px-3">Tim & Manajer</th>
-                                <th class="py-2 px-1 text-center w-8" title="Played">P</th>
-                                <th class="py-2 px-1 text-center w-8" title="Won">W</th>
-                                <th class="py-2 px-1 text-center w-8" title="Drawn">D</th>
-                                <th class="py-2 px-1 text-center w-8" title="Lost">L</th>
-                                <th class="py-2 px-1 text-center w-12" title="Goals For - Goals Against">Goal</th>
-                                <th class="py-2 px-1 text-center w-8" title="Goal Difference">GD</th>
-                                <th class="py-2 px-2 text-center w-10 bg-primary/5 rounded-t-md text-primary">Pts</th>
-                            </tr>
-                         Downs -->
-                        <tbody>
-                            ${tableRowsHTML}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            groupsGrid.appendChild(groupCard);
-        });
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Hasil_Draw_Piala_Dunia_2026.csv");
+        document.body.appendChild(link);
+        
+        link.click();
+        document.body.removeChild(link);
     }
 
     function resetDrawPool() {
-        if(confirm('Apakah Anda yakin ingin mereset seluruh data undian? Semua riwayat draw dan susunan klasemen grup akan terhapus.')){
+        if(confirm('Apakah Anda yakin ingin menghapus riwayat kocokan layar ini? Tindakan ini tidak akan memengaruhi data klasemen permanen di menu Tournament Standings.')){
             localStorage.removeItem('drawState');
-            window.location.href = 'index.html';
+            renderLedger();
         }
     }
 
-    // Jalankan render awal saat halaman dibuka
     renderLedger();
 </script>
 </body>
