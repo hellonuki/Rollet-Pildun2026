@@ -1,0 +1,9 @@
+{
+  "name": "spintocountry-fifa26",
+  "version": "1.0.0",
+  "description": "SpinToCountry - FIFA World Cup 2026 Team Randomizer",
+  "scripts": {
+    "dev": "npx -y live-server --port=8080 --no-browser",
+    "start": "npx -y live-server --port=8080"
+  }
+}

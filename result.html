@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SpinToCountry - Draw Ledger</title>
+    <meta name="description" content="View the official draw results for the 2026 FIFA World Cup." />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#001b3e",
+                        "on-surface": "#0d1b36",
+                        "outline-variant": "#c4c6d3",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed-dim": "#aac7ff",
+                        "vibrant-blue": "#0A84FF",
+                        "on-primary-container": "#7f9ff6",
+                        "primary-container": "#003284",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#4e3d00",
+                        "pitch-dark": "#020F2A",
+                        "on-primary-fixed": "#001848",
+                        "surface-ice": "#EEF2FB",
+                        "on-secondary-container": "#fefcff",
+                        "surface-variant": "#d9e2ff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#e9c349",
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e1e8ff",
+                        "secondary": "#005ab3",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "prestige-gold": "#D4AF37",
+                        "tertiary-fixed": "#ffe088",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9ff",
+                        "primary": "#001e57",
+                        "surface-dim": "#cddafe",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "on-background": "#0d1b36",
+                        "outline": "#747683",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#1c4293",
+                        "inverse-primary": "#b2c5ff",
+                        "surface-tint": "#395aad",
+                        "primary-fixed": "#dae2ff",
+                        "surface-bright": "#faf9ff",
+                        "tertiary-container": "#cca72f",
+                        "surface": "#faf9ff",
+                        "secondary-fixed": "#d6e3ff",
+                        "inverse-surface": "#23304c",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00468d",
+                        "secondary-container": "#0073e0",
+                        "fifa-blue": "#003284",
+                        "surface-container-low": "#f1f3ff",
+                        "tertiary": "#735c00",
+                        "on-surface-variant": "#444651",
+                        "surface-container-highest": "#d9e2ff",
+                        "surface-container": "#e9edff",
+                        "error-red": "#F43056"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "section-gap": "80px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Outfit"],
+                        "button": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Outfit"],
+                        "display-lg-mobile": ["Outfit"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Outfit"],
+                        "headline-md": ["Outfit"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-hover-lift:hover {
+            transform: translateY(-8px);
+        }
+        html { scroll-behavior: smooth; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
+
+<!-- Top Navigation Bar -->
+<nav class="bg-pitch-dark shadow-xl sticky top-0 z-50 w-full border-b border-prestige-gold/20">
+    <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-7xl mx-auto h-20">
+        <a href="index.html" class="font-fifa font-black text-white hover:text-prestige-gold transition-colors flex items-center gap-3 text-2xl tracking-tighter">
+            <span class="material-symbols-outlined text-3xl text-prestige-gold">public</span>
+            FIFA WORLD CUP™
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="font-button font-semibold text-white/70 hover:text-white transition-colors cursor-pointer" href="index.html">Official Draw</a>
+            <a class="font-button font-semibold text-white/70 hover:text-white transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
+            <a class="font-button font-semibold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all" href="result.html">Draw Ledger</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-white text-2xl cursor-pointer">menu</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Navigation Drawer -->
+<div id="mobile-nav" class="fixed inset-0 z-[60] md:hidden transform translate-x-full transition-transform duration-300">
+    <div class="absolute inset-0 bg-pitch-dark/60 backdrop-blur-sm" id="mobile-nav-overlay"></div>
+    <div class="absolute right-0 top-0 h-full w-72 bg-fifa-blue shadow-2xl flex flex-col p-8 gap-6">
+        <button id="mobile-nav-close" class="self-end material-symbols-outlined text-on-primary text-2xl cursor-pointer">close</button>
+        <a class="font-body-md text-body-md text-surface-variant/80 hover:text-on-primary py-3 border-b border-white/10 transition-colors" href="index.html">Draw Pool</a>
+        <a class="font-body-md text-body-md text-surface-variant/80 hover:text-on-primary py-3 border-b border-white/10 transition-colors" href="teams.html">World Cup Teams</a>
+        <a class="font-body-md text-body-md text-on-primary font-bold py-3 border-b border-white/20" href="result.html">Draw Results</a>
+    </div>
+</div>
+
+<main class="flex-grow pt-12 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+    <!-- Results Header -->
+    <header class="text-center mb-12 animate-fade-in">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full font-label-bold text-label-bold mb-4">OFFICIAL LEDGER</span>
+        <h1 class="font-display-lg-mobile md:font-display-lg text-primary mb-4 tracking-tight">
+            Draw Results
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+            A comprehensive record of all participants and their assigned nations for the 2026 World Cup tournament.
+        </p>
+    </header>
+
+    <!-- Controls -->
+    <div class="flex justify-between items-center border-b border-surface-ice pb-6 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
+        <h3 class="font-headline-md text-primary"><span id="drawCount">0</span> Pairings Recorded</h3>
+        <button onclick="resetDrawPool()" class="flex items-center gap-2 bg-error-container text-error px-4 py-2 rounded font-button text-sm hover:bg-error/20 transition-all active:scale-95">
+            <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+            Reset Draw Pool
+        </button>
+    </div>
+
+    <!-- No Results State -->
+    <div id="noResults" class="hidden text-center py-16 animate-fade-in" style="animation-delay: 0.2s;">
+        <span class="material-symbols-outlined text-8xl text-outline/30 mb-6 block">history</span>
+        <h2 class="font-headline-lg text-primary mb-4">No Drawings Yet</h2>
+        <p class="font-body-lg text-on-surface-variant max-w-xl mx-auto mb-8">
+            The draw pool has not been initiated. Head to the Draw Pool page to set up participants and begin extracting capsules.
+        </p>
+        <a href="index.html" class="inline-flex items-center gap-3 bg-fifa-blue text-white px-10 py-5 rounded-lg font-button hover:bg-secondary transition-all active:scale-95 shadow-lg">
+            <span class="material-symbols-outlined">play_circle</span>
+            Go to Draw Pool
+        </a>
+    </div>
+
+    <!-- Ledger Grid -->
+    <div id="ledgerGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in" style="animation-delay: 0.2s;">
+        <!-- Javascript will populate this -->
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-pitch-dark w-full py-16 px-4 md:px-margin-desktop flex flex-col items-center gap-unit mt-auto">
+    <a href="index.html" class="font-headline-md font-bold text-on-primary mb-6 hover:opacity-90 transition-opacity">
+        SpinToCountry
+    </a>
+    <div class="flex gap-8 mb-8">
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Privacy</a>
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Terms</a>
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Contact</a>
+    </div>
+    <p class="font-body-sm text-surface-variant text-center max-w-md opacity-80">
+        © 2026 SpinToCountry. All rights reserved. World Cup is a trademark of FIFA.
+    </p>
+</footer>
+
+<script>
+    // Mobile nav
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileNavClose = document.getElementById('mobile-nav-close');
+    const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+
+    mobileMenuBtn.addEventListener('click', () => mobileNav.classList.remove('translate-x-full'));
+    mobileNavClose.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
+    mobileNavOverlay.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
+
+    // Ledger Logic
+    const ledgerGrid = document.getElementById('ledgerGrid');
+    const noResults = document.getElementById('noResults');
+    const drawCount = document.getElementById('drawCount');
+
+    function renderLedger() {
+        const savedState = localStorage.getItem('drawState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            const history = state.drawHistory || [];
+            
+            drawCount.textContent = history.length;
+
+            if (history.length > 0) {
+                noResults.classList.add('hidden');
+                ledgerGrid.innerHTML = '';
+                
+                // Reverse to show newest at top
+                history.slice().reverse().forEach((draw, index) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-surface-ice rounded-xl p-6 shadow-sm card-hover-lift flex flex-col gap-4 relative overflow-hidden group";
+                    
+                    // Draw Number badge
+                    const num = history.length - index;
+
+                    card.innerHTML = `
+                        <div class="absolute top-0 right-0 bg-surface-container text-on-surface-variant font-label-bold text-[10px] px-3 py-1 rounded-bl-lg">
+                            DRAW #${num}
+                        </div>
+                        <div class="flex flex-col gap-1 mb-2">
+                            <span class="text-outline font-label-bold text-xs uppercase tracking-wider">Participant</span>
+                            <h3 class="font-headline-md text-pitch-dark group-hover:text-vibrant-blue transition-colors truncate" title="${draw.participant}">
+                                ${draw.participant}
+                            </h3>
+                        </div>
+                        <div class="h-px w-full bg-surface-ice"></div>
+                        <div class="flex items-center gap-4 mt-2">
+                            <span class="text-5xl drop-shadow-sm">${draw.country.flag}</span>
+                            <div>
+                                <h4 class="font-headline-md text-primary leading-tight">${draw.country.name}</h4>
+                                <span class="font-label-bold text-outline-variant uppercase text-[10px]">${draw.country.conf}</span>
+                            </div>
+                        </div>
+                    `;
+                    ledgerGrid.appendChild(card);
+                });
+            } else {
+                noResults.classList.remove('hidden');
+            }
+        } else {
+            noResults.classList.remove('hidden');
+        }
+    }
+
+    function resetDrawPool() {
+        if(confirm('Are you absolutely sure you want to reset the draw pool? This will delete all history and start from scratch.')){
+            localStorage.removeItem('drawState');
+            window.location.href = 'index.html';
+        }
+    }
+
+    renderLedger();
+</script>
+</body>
+</html>
