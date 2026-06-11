@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>World Cup 2026 Teams | Draw Portal</title>
-    <meta name="description" content="Manage the official roster of competing nations." />
+    <title>SpinToCountry - Draw Ledger</title>
+    <meta name="description" content="View the official draw results for the 2026 FIFA World Cup." />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
@@ -14,64 +14,123 @@
             theme: {
                 extend: {
                     "colors": {
-                        "pitch-dark": "#020F2A",
-                        "fifa-blue": "#003284",
-                        "vibrant-blue": "#0A84FF",
-                        "prestige-gold": "#D4AF37",
-                        "error-red": "#F43056",
-                        "surface-ice": "#EEF2FB",
+                        "on-secondary-fixed": "#001b3e",
                         "on-surface": "#0d1b36",
-                        "outline": "#747683",
                         "outline-variant": "#c4c6d3",
-                        "primary": "#001e57"
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed-dim": "#aac7ff",
+                        "vibrant-blue": "#0A84FF",
+                        "on-primary-container": "#7f9ff6",
+                        "primary-container": "#003284",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#4e3d00",
+                        "pitch-dark": "#020F2A",
+                        "on-primary-fixed": "#001848",
+                        "surface-ice": "#EEF2FB",
+                        "on-secondary-container": "#fefcff",
+                        "surface-variant": "#d9e2ff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#e9c349",
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e1e8ff",
+                        "secondary": "#005ab3",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "prestige-gold": "#D4AF37",
+                        "tertiary-fixed": "#ffe088",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9ff",
+                        "primary": "#001e57",
+                        "surface-dim": "#cddafe",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "on-background": "#0d1b36",
+                        "outline": "#747683",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#1c4293",
+                        "inverse-primary": "#b2c5ff",
+                        "surface-tint": "#395aad",
+                        "primary-fixed": "#dae2ff",
+                        "surface-bright": "#faf9ff",
+                        "tertiary-container": "#cca72f",
+                        "surface": "#faf9ff",
+                        "secondary-fixed": "#d6e3ff",
+                        "inverse-surface": "#23304c",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00468d",
+                        "secondary-container": "#0073e0",
+                        "fifa-blue": "#003284",
+                        "surface-container-low": "#f1f3ff",
+                        "tertiary": "#735c00",
+                        "on-surface-variant": "#444651",
+                        "surface-container-highest": "#d9e2ff",
+                        "surface-container": "#e9edff",
+                        "error-red": "#F43056"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "section-gap": "80px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px"
                     },
                     "fontFamily": {
-                        "body-md": ["Inter", "sans-serif"],
-                        "headline-lg": ["Outfit", "sans-serif"],
-                        "headline-xl": ["Outfit", "sans-serif"],
-                        "display-lg": ["Outfit", "sans-serif"],
-                        "button": ["Inter", "sans-serif"],
-                        "label-bold": ["Inter", "sans-serif"],
-                        "fifa": ["Outfit", "sans-serif"]
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Outfit"],
+                        "button": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Outfit"],
+                        "display-lg-mobile": ["Outfit"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Outfit"],
+                        "headline-md": ["Outfit"]
                     }
-                }
-            }
+                },
+            },
         }
     </script>
     <style>
         .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .team-card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -10px rgba(2, 15, 42, 0.08);
+        .card-hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .drawn-team {
-            opacity: 0.5;
-            filter: grayscale(100%);
+        .card-hover-lift:hover {
+            transform: translateY(-8px);
         }
-        .delete-btn {
-            opacity: 0;
-            transition: opacity 0.2s;
+        html { scroll-behavior: smooth; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .group:hover .delete-btn {
-            opacity: 1;
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
         }
     </style>
 </head>
-<body class="bg-surface-ice text-on-surface font-body-md overflow-x-hidden min-h-screen flex flex-col">
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
 
-<!-- Top Navigation Bar -->
-<nav class="bg-pitch-dark shadow-xl sticky top-0 z-50 w-full border-b border-prestige-gold/20">
+<nav class="bg-pitch-dark/90 backdrop-blur-md shadow-lg sticky top-0 z-50 w-full border-b border-white/10">
     <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-7xl mx-auto h-20">
-        <a href="index.html" class="font-fifa font-black text-white hover:text-prestige-gold transition-colors flex items-center gap-3 text-2xl tracking-tighter">
-            <span class="material-symbols-outlined text-3xl text-prestige-gold">public</span>
+        <a href="index.html" class="font-headline-md font-black text-prestige-gold hover:text-white transition-colors flex items-center gap-3 text-2xl tracking-tighter">
+            <span class="material-symbols-outlined text-3xl">public</span>
             FIFA WORLD CUP™
         </a>
         <div class="hidden md:flex items-center gap-8">
-            <a class="font-button font-semibold text-white/70 hover:text-white transition-colors cursor-pointer" href="index.html">Official Draw</a>
-            <a class="font-button font-semibold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all" href="teams.html">World Cup Teams</a>
-            <a class="font-button font-semibold text-white/70 hover:text-white transition-colors cursor-pointer" href="result.html">Draw Ledger</a>
+            <a class="font-button text-white/70 hover:text-white font-semibold transition-colors cursor-pointer" href="index.html">Official Draw</a>
+            <a class="font-button text-white/70 hover:text-white font-semibold transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
+            <a class="font-button text-white border-b-2 border-prestige-gold pb-1 font-bold cursor-pointer transition-all duration-200" href="result.html">Draw Ledger</a>
         </div>
         <div class="flex items-center gap-4">
             <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-white text-2xl cursor-pointer">menu</button>
@@ -79,118 +138,75 @@
     </div>
 </nav>
 
-<!-- Mobile Navigation Drawer -->
 <div id="mobile-nav" class="fixed inset-0 z-[60] md:hidden transform translate-x-full transition-transform duration-300">
-    <div class="absolute inset-0 bg-pitch-dark/80 backdrop-blur-sm" id="mobile-nav-overlay"></div>
+    <div class="absolute inset-0 bg-pitch-dark/80 backdrop-blur-md" id="mobile-nav-overlay"></div>
     <div class="absolute right-0 top-0 h-full w-72 bg-fifa-blue border-l border-prestige-gold/30 shadow-2xl flex flex-col p-8 gap-6">
         <button id="mobile-nav-close" class="self-end material-symbols-outlined text-white text-2xl">close</button>
         <a class="font-button font-semibold text-white/80 hover:text-white py-3 border-b border-white/10" href="index.html">Official Draw</a>
-        <a class="font-button font-semibold text-prestige-gold py-3 border-b border-white/20" href="teams.html">World Cup Teams</a>
-        <a class="font-button font-semibold text-white/80 hover:text-white py-3 border-b border-white/10" href="result.html">Draw Ledger</a>
+        <a class="font-button font-semibold text-white/80 hover:text-white py-3 border-b border-white/10" href="teams.html">World Cup Teams</a>
+        <a class="font-button font-bold text-prestige-gold py-3 border-b border-white/20" href="result.html">Draw Ledger</a>
     </div>
 </div>
 
-<main class="max-w-7xl mx-auto px-4 md:px-12 py-12 flex-grow w-full">
-    
-    <!-- Hero Section & Management Controls -->
-    <section class="mb-12 bg-white rounded-2xl shadow-sm border border-outline-variant/30 p-8">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8">
-            <div class="space-y-3 flex-1">
-                <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full font-label-bold text-xs uppercase tracking-widest border border-primary/20">ROSTER MANAGEMENT</span>
-                <h1 class="font-headline-xl text-pitch-dark tracking-tight leading-none text-4xl">
-                    Participating Nations
-                </h1>
-                <p class="font-body-md text-outline max-w-2xl">
-                    Manage the nations available in the draw pool. You can remove specific countries to customize your tournament, or add new custom entities. Exhausted teams (already assigned in the active draw) cannot be removed.
-                </p>
-            </div>
+<main class="flex-grow pt-12 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+    <header class="text-center mb-12 animate-fade-in">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full font-label-bold text-label-bold mb-4">OFFICIAL LEDGER</span>
+        <h1 class="font-display-lg-mobile md:font-display-lg text-primary mb-4 tracking-tight">
+            Draw Results
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+            A comprehensive record of all participants and their assigned nations for the 2026 World Cup tournament.
+        </p>
+    </header>
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-surface-ice pb-6 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
+        <h3 class="font-headline-md text-primary"><span id="drawCount">0</span> Pairings Recorded</h3>
+        
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button id="exportCsvBtn" onclick="exportToCSV()" class="hidden flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded font-button text-sm hover:bg-emerald-700 transition-all active:scale-95 shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+                Export to Excel / CSV
+            </button>
             
-            <div class="flex flex-col sm:flex-row gap-4">
-                <div class="relative w-full sm:w-72">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
-                    <input id="searchInput" class="w-full pl-12 pr-4 py-3 bg-surface-ice border-none rounded-xl focus:ring-2 focus:ring-vibrant-blue transition-all font-body-md" placeholder="Search nations..." type="text"/>
-                </div>
-                <button onclick="toggleAddForm()" class="bg-fifa-blue text-white px-6 py-3 rounded-xl font-button font-bold hover:bg-vibrant-blue transition-all active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
-                    <span class="material-symbols-outlined">add_circle</span> Add Nation
-                </button>
-            </div>
+            <button onclick="resetDrawPool()" class="flex items-center gap-2 bg-error-container text-error px-4 py-2 rounded font-button text-sm hover:bg-error/20 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+                Reset Draw Pool
+            </button>
         </div>
-
-        <!-- Add Custom Team Form (Hidden by default) -->
-        <div id="addTeamForm" class="hidden bg-surface-ice p-6 rounded-xl border border-vibrant-blue/20 mb-8 animate-[popIn_0.3s_ease-out]">
-            <h3 class="font-headline-md text-primary mb-4 flex items-center gap-2">
-                <span class="material-symbols-outlined">edit_square</span> Custom Nation Entry
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div>
-                    <label class="block font-label-bold text-outline text-xs uppercase mb-1">Country Name</label>
-                    <input type="text" id="newName" class="w-full rounded-lg border-outline-variant/50 focus:ring-vibrant-blue focus:border-vibrant-blue" placeholder="e.g. Atlantis">
-                </div>
-                <div>
-                    <label class="block font-label-bold text-outline text-xs uppercase mb-1">Abbreviation (3 Letters)</label>
-                    <input type="text" id="newAbbr" maxlength="3" class="w-full rounded-lg border-outline-variant/50 focus:ring-vibrant-blue focus:border-vibrant-blue uppercase" placeholder="e.g. ATL">
-                </div>
-                <div>
-                    <label class="block font-label-bold text-outline text-xs uppercase mb-1">Flag Emoji</label>
-                    <input type="text" id="newFlag" class="w-full rounded-lg border-outline-variant/50 focus:ring-vibrant-blue focus:border-vibrant-blue" placeholder="e.g. 🏳️‍🌈">
-                </div>
-                <div>
-                    <label class="block font-label-bold text-outline text-xs uppercase mb-1">Confederation</label>
-                    <select id="newConf" class="w-full rounded-lg border-outline-variant/50 focus:ring-vibrant-blue focus:border-vibrant-blue">
-                        <option value="CUSTOM">CUSTOM</option>
-                        <option value="UEFA">UEFA</option>
-                        <option value="CONMEBOL">CONMEBOL</option>
-                        <option value="CONCACAF">CONCACAF</option>
-                        <option value="CAF">CAF</option>
-                        <option value="AFC">AFC</option>
-                        <option value="OFC">OFC</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3">
-                <button onclick="toggleAddForm()" class="px-5 py-2 rounded-lg font-button text-outline hover:bg-white hover:text-pitch-dark transition-colors">Cancel</button>
-                <button onclick="addCustomTeam()" class="bg-vibrant-blue text-white px-6 py-2 rounded-lg font-button hover:bg-fifa-blue transition-colors shadow-sm">Save Nation</button>
-            </div>
-        </div>
-
-        <!-- Sticky Confederation Quick Nav -->
-        <div class="flex overflow-x-auto pb-2 gap-3 no-scrollbar" id="confedFilters">
-            <button data-conf="ALL" class="whitespace-nowrap px-5 py-2 bg-pitch-dark text-white font-button text-sm font-bold rounded-full transition-all border border-transparent">All Teams</button>
-            <button data-conf="UEFA" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">UEFA</button>
-            <button data-conf="CONMEBOL" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">CONMEBOL</button>
-            <button data-conf="CONCACAF" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">CONCACAF</button>
-            <button data-conf="CAF" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">CAF</button>
-            <button data-conf="AFC" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">AFC</button>
-            <button data-conf="OFC" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">OFC</button>
-            <button data-conf="CUSTOM" class="whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50">CUSTOM</button>
-        </div>
-    </section>
-
-    <!-- Dynamic Container for all teams -->
-    <div id="teamsContainer" class="flex flex-col gap-12">
-        <!-- Javascript will inject sections here -->
     </div>
 
+    <div id="noResults" class="hidden text-center py-16 animate-fade-in" style="animation-delay: 0.2s;">
+        <span class="material-symbols-outlined text-8xl text-outline/30 mb-6 block">history</span>
+        <h2 class="font-headline-lg text-primary mb-4">No Drawings Yet</h2>
+        <p class="font-body-lg text-on-surface-variant max-w-xl mx-auto mb-8">
+            The draw pool has not been initiated. Head to the Draw Pool page to set up participants and begin extracting capsules.
+        </p>
+        <a href="index.html" class="inline-flex items-center gap-3 bg-fifa-blue text-white px-10 py-5 rounded-lg font-button hover:bg-secondary transition-all active:scale-95 shadow-lg">
+            <span class="material-symbols-outlined">play_circle</span>
+            Go to Draw Pool
+        </a>
+    </div>
+
+    <div id="ledgerGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in" style="animation-delay: 0.2s;">
+        </div>
 </main>
 
-<!-- Footer -->
-<footer class="bg-pitch-dark w-full py-16 px-4 md:px-12 flex flex-col items-center gap-4 mt-auto border-t border-prestige-gold/20">
-    <a href="index.html" class="font-fifa font-black text-white hover:text-prestige-gold transition-colors flex items-center gap-2 text-2xl tracking-tighter mb-4">
-        <span class="material-symbols-outlined text-3xl">public</span>
-        FIFA WORLD CUP™
+<footer class="bg-pitch-dark w-full py-16 px-4 md:px-margin-desktop flex flex-col items-center gap-unit mt-auto">
+    <a href="index.html" class="font-headline-md font-bold text-on-primary mb-6 hover:opacity-90 transition-opacity">
+        SpinToCountry
     </a>
-    <div class="flex gap-8 mb-6">
-        <a class="font-body-md text-sm text-outline hover:text-white transition-colors" href="#">Privacy Policy</a>
-        <a class="font-body-md text-sm text-outline hover:text-white transition-colors" href="#">Terms of Service</a>
-        <a class="font-body-md text-sm text-outline hover:text-white transition-colors" href="#">Contact FIFA</a>
+    <div class="flex gap-8 mb-8">
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Privacy</a>
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Terms</a>
+        <a class="font-body-sm text-outline-variant hover:text-white transition-colors hover:underline" href="#">Contact</a>
     </div>
-    <p class="font-body-md text-xs text-outline/60 text-center max-w-md">
-        © 2026 FIFA World Cup™ Draw Simulator. All Rights Reserved. This is a simulation tool.
+    <p class="font-body-sm text-surface-variant text-center max-w-md opacity-80">
+        © 2026 SpinToCountry. All rights reserved. World Cup is a trademark of FIFA.
     </p>
 </footer>
 
 <script>
-    // Navigation
+    // Mobile nav
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileNav = document.getElementById('mobile-nav');
     const mobileNavClose = document.getElementById('mobile-nav-close');
@@ -200,220 +216,105 @@
     mobileNavClose.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
     mobileNavOverlay.addEventListener('click', () => mobileNav.classList.add('translate-x-full'));
 
-    // Database
-    // Database yang sudah diperbarui (48 Negara Peserta WC 2026)
-    const baseTeams = [
-    // AFC (9)
-    { name: "Australia", abbr: "AUS", flag: "🇦🇺", conf: "AFC" }, { name: "Iran", abbr: "IRN", flag: "🇮🇷", conf: "AFC" },
-    { name: "Japan", abbr: "JPN", flag: "🇯🇵", conf: "AFC" }, { name: "Jordan", abbr: "JOR", flag: "🇯🇴", conf: "AFC" },
-    { name: "South Korea", abbr: "KOR", flag: "🇰🇷", conf: "AFC" }, { name: "Qatar", abbr: "QAT", flag: "🇶🇦", conf: "AFC" },
-    { name: "Saudi Arabia", abbr: "KSA", flag: "🇸🇦", conf: "AFC" }, { name: "Uzbekistan", abbr: "UZB", flag: "🇺🇿", conf: "AFC" },
-    { name: "Iraq", abbr: "IRQ", flag: "🇮🇶", conf: "AFC" },
-    // CAF (10)
-    { name: "Algeria", abbr: "ALG", flag: "🇩🇿", conf: "CAF" }, { name: "Cape Verde", abbr: "CPV", flag: "🇨🇻", conf: "CAF" },
-    { name: "Ivory Coast", abbr: "CIV", flag: "🇨🇮", conf: "CAF" }, { name: "Egypt", abbr: "EGY", flag: "🇪🇬", conf: "CAF" },
-    { name: "Ghana", abbr: "GHA", flag: "🇬🇭", conf: "CAF" }, { name: "Morocco", abbr: "MAR", flag: "🇲🇦", conf: "CAF" },
-    { name: "Senegal", abbr: "SEN", flag: "🇸🇳", conf: "CAF" }, { name: "South Africa", abbr: "RSA", flag: "🇿🇦", conf: "CAF" },
-    { name: "Tunisia", abbr: "TUN", flag: "🇹🇳", conf: "CAF" }, { name: "DR Congo", abbr: "COD", flag: "🇨🇩", conf: "CAF" },
-    // CONCACAF (6)
-    { name: "Canada", abbr: "CAN", flag: "🇨🇦", conf: "CONCACAF" }, { name: "Mexico", abbr: "MEX", flag: "🇲🇽", conf: "CONCACAF" },
-    { name: "USA", abbr: "USA", flag: "🇺🇸", conf: "CONCACAF" }, { name: "Curacao", abbr: "CUW", flag: "🇨🇼", conf: "CONCACAF" },
-    { name: "Haiti", abbr: "HAI", flag: "🇭🇹", conf: "CONCACAF" }, { name: "Panama", abbr: "PAN", flag: "🇵🇦", conf: "CONCACAF" },
-    // CONMEBOL (6)
-    { name: "Argentina", abbr: "ARG", flag: "🇦🇷", conf: "CONMEBOL" }, { name: "Brazil", abbr: "BRA", flag: "🇧🇷", conf: "CONMEBOL" },
-    { name: "Colombia", abbr: "COL", flag: "🇨🇴", conf: "CONMEBOL" }, { name: "Ecuador", abbr: "ECU", flag: "🇪🇨", conf: "CONMEBOL" },
-    { name: "Paraguay", abbr: "PAR", flag: "🇵🇾", conf: "CONMEBOL" }, { name: "Uruguay", abbr: "URU", flag: "🇺🇾", conf: "CONMEBOL" },
-    // OFC (1)
-    { name: "New Zealand", abbr: "NZL", flag: "🇳🇿", conf: "OFC" },
-    // UEFA (16)
-    { name: "Austria", abbr: "AUT", flag: "🇦🇹", conf: "UEFA" }, { name: "Belgium", abbr: "BEL", flag: "🇧🇪", conf: "UEFA" },
-    { name: "Bosnia and Herzegovina", abbr: "BIH", flag: "🇧🇦", conf: "UEFA" }, { name: "Croatia", abbr: "CRO", flag: "🇭🇷", conf: "UEFA" },
-    { name: "Czech Republic", abbr: "CZE", flag: "🇨🇿", conf: "UEFA" }, { name: "England", abbr: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA" },
-    { name: "France", abbr: "FRA", flag: "🇫🇷", conf: "UEFA" }, { name: "Germany", abbr: "GER", flag: "🇩🇪", conf: "UEFA" },
-    { name: "Netherlands", abbr: "NED", flag: "🇳🇱", conf: "UEFA" }, { name: "Norway", abbr: "NOR", flag: "🇳🇴", conf: "UEFA" },
-    { name: "Portugal", abbr: "POR", flag: "🇵🇹", conf: "UEFA" }, { name: "Scotland", abbr: "SCO", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA" },
-    { name: "Spain", abbr: "ESP", flag: "🇪🇸", conf: "UEFA" }, { name: "Sweden", abbr: "SWE", flag: "🇸🇪", conf: "UEFA" },
-    { name: "Switzerland", abbr: "SUI", flag: "🇨🇭", conf: "UEFA" }, { name: "Turkey", abbr: "TUR", flag: "🇹🇷", conf: "UEFA" }
-];
+    // Ledger Logic
+    const ledgerGrid = document.getElementById('ledgerGrid');
+    const noResults = document.getElementById('noResults');
+    const drawCount = document.getElementById('drawCount');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
 
-    // Master Pool Management
-    let masterPool = [];
-    let drawnTeamsSet = new Set();
-    
-    function initData() {
-        // Load or seed Master Pool
-        const storedMaster = localStorage.getItem('masterTeamsPool');
-        if (storedMaster) {
-            masterPool = JSON.parse(storedMaster);
-        } else {
-            masterPool = [...baseTeams];
-            localStorage.setItem('masterTeamsPool', JSON.stringify(masterPool));
-        }
-
-        // Determine exhausted/drawn teams
-        const activeDraw = localStorage.getItem('drawState');
-        if (activeDraw) {
-            const state = JSON.parse(activeDraw);
-            if (state.drawHistory) {
-                state.drawHistory.forEach(d => drawnTeamsSet.add(d.country.name));
-            }
-        }
-    }
-
-    const container = document.getElementById('teamsContainer');
-    const searchInput = document.getElementById('searchInput');
-
-    function renderTeams(filterConf = 'ALL', searchQuery = '') {
-        container.innerHTML = '';
-        const confeds = ["UEFA", "CONMEBOL", "CONCACAF", "CAF", "AFC", "OFC", "CUSTOM"];
-
-        confeds.forEach(conf => {
-            if (filterConf !== 'ALL' && filterConf !== conf) return;
-
-            const teamsInConf = masterPool.filter(t => t.conf === conf && 
-                (t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                 t.abbr.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
+    function renderLedger() {
+        const savedState = localStorage.getItem('drawState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            const history = state.drawHistory || [];
             
-            if (teamsInConf.length === 0) return;
+            drawCount.textContent = history.length;
 
-            // Build Section
-            const section = document.createElement('section');
-            
-            let html = `
-                <div class="flex items-center justify-between mb-6 border-b-2 border-primary/10 pb-2">
-                    <div class="flex items-center gap-3">
-                        <h2 class="font-headline-xl text-primary uppercase tracking-wider text-2xl">${conf}</h2>
-                        <span class="bg-primary/5 text-primary px-2 py-0.5 font-label-bold text-[10px] rounded">${teamsInConf.length} NATIONS</span>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            `;
-
-            teamsInConf.forEach(team => {
-                const isDrawn = drawnTeamsSet.has(team.name);
-                const drawnClass = isDrawn ? 'drawn-team' : '';
+            if (history.length > 0) {
+                noResults.classList.add('hidden');
+                exportCsvBtn.classList.remove('hidden'); // Tampilkan tombol export jika ada data
+                ledgerGrid.innerHTML = '';
                 
-                // Top badges
-                let badges = '';
-                if(isDrawn) {
-                    badges += `<span class="bg-pitch-dark text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest shadow-sm z-10 absolute top-2 right-2">EXHAUSTED</span>`;
-                }
+                // Reverse to show newest at top
+                history.slice().reverse().forEach((draw, index) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-surface-ice rounded-xl p-6 shadow-sm card-hover-lift flex flex-col gap-4 relative overflow-hidden group";
+                    
+                    // Draw Number badge
+                    const num = history.length - index;
 
-                // Delete button (only if not drawn)
-                const deleteBtn = !isDrawn ? `
-                    <button onclick="removeTeam('${team.name}')" class="delete-btn absolute -top-2 -right-2 bg-error-red text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg z-20 hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-[14px]">close</span>
-                    </button>
-                ` : '';
-
-                html += `
-                    <div class="group bg-white border border-outline-variant/30 p-5 rounded-2xl team-card-hover transition-all relative ${drawnClass}">
-                        ${badges}
-                        ${deleteBtn}
-                        
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="text-5xl drop-shadow-sm filter">${team.flag}</div>
-                            <div class="font-fifa font-black text-outline/30 text-4xl tracking-tighter uppercase select-none">${team.abbr}</div>
+                    card.innerHTML = `
+                        <div class="absolute top-0 right-0 bg-surface-container text-on-surface-variant font-label-bold text-[10px] px-3 py-1 rounded-bl-lg">
+                            DRAW #${num}
                         </div>
-                        
-                        <h3 class="font-headline-md text-pitch-dark leading-tight group-hover:text-fifa-blue transition-colors text-lg font-bold">${team.name}</h3>
-                        <p class="font-label-bold text-outline-variant mt-1 text-[10px] uppercase tracking-wider">${team.rank || 'UNRANKED'}</p>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            section.innerHTML = html;
-            container.appendChild(section);
-        });
-    }
-
-    // Interactions
-    const filterBtns = document.querySelectorAll('#confedFilters button');
-    let currentConf = 'ALL';
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            currentConf = e.target.getAttribute('data-conf');
-            
-            // UI Toggle
-            filterBtns.forEach(b => {
-                b.className = 'whitespace-nowrap px-5 py-2 bg-white hover:bg-surface-ice text-outline font-button text-sm font-bold rounded-full transition-all border border-outline-variant/50';
-            });
-            e.target.className = 'whitespace-nowrap px-5 py-2 bg-pitch-dark text-white font-button text-sm font-bold rounded-full transition-all border border-transparent';
-            
-            renderTeams(currentConf, searchInput.value);
-        });
-    });
-
-    searchInput.addEventListener('input', (e) => {
-        renderTeams(currentConf, e.target.value);
-    });
-
-    // Custom Form Logic
-    function toggleAddForm() {
-        const form = document.getElementById('addTeamForm');
-        form.classList.toggle('hidden');
-    }
-
-    function removeTeam(teamName) {
-        if(confirm(`Are you sure you want to remove ${teamName} from the draw pool?`)) {
-            masterPool = masterPool.filter(t => t.name !== teamName);
-            localStorage.setItem('masterTeamsPool', JSON.stringify(masterPool));
-            
-            // Note: If an active draw is happening, we should warn them, but for this simple app, we just sync the active pool if it exists.
-            const activeDraw = localStorage.getItem('drawState');
-            if (activeDraw) {
-                const state = JSON.parse(activeDraw);
-                state.availableCountries = state.availableCountries.filter(t => t.name !== teamName);
-                localStorage.setItem('drawState', JSON.stringify(state));
+                        <div class="flex flex-col gap-1 mb-2">
+                            <span class="text-outline font-label-bold text-xs uppercase tracking-wider">Participant</span>
+                            <h3 class="font-headline-md text-pitch-dark group-hover:text-vibrant-blue transition-colors truncate" title="${draw.participant}">
+                                ${draw.participant}
+                            </h3>
+                        </div>
+                        <div class="h-px w-full bg-surface-ice"></div>
+                        <div class="flex items-center gap-4 mt-2">
+                            <span class="text-5xl drop-shadow-sm">${draw.country.flag}</span>
+                            <div>
+                                <h4 class="font-headline-md text-primary leading-tight">${draw.country.name}</h4>
+                                <span class="font-label-bold text-outline-variant uppercase text-[10px]">${draw.country.conf}</span>
+                            </div>
+                        </div>
+                    `;
+                    ledgerGrid.appendChild(card);
+                });
+            } else {
+                noResults.classList.remove('hidden');
+                exportCsvBtn.classList.add('hidden');
             }
-
-            renderTeams(currentConf, searchInput.value);
+        } else {
+            noResults.classList.remove('hidden');
+            exportCsvBtn.classList.add('hidden');
         }
     }
 
-    function addCustomTeam() {
-        const name = document.getElementById('newName').value.trim();
-        const abbr = document.getElementById('newAbbr').value.trim().toUpperCase();
-        const flag = document.getElementById('newFlag').value.trim();
-        const conf = document.getElementById('newConf').value;
+    // Fungsi Export Data ke Format CSV / Excel
+    function exportToCSV() {
+        const savedState = localStorage.getItem('drawState');
+        if (!savedState) return;
 
-        if(!name || !abbr || !flag) {
-            alert('Please fill out all fields.');
-            return;
-        }
-        if(abbr.length !== 3) {
-            alert('Abbreviation must be exactly 3 letters.');
-            return;
-        }
+        const state = JSON.parse(savedState);
+        const history = state.drawHistory || [];
+        if (history.length === 0) return;
 
-        // Add to master
-        const newTeam = { name, abbr, flag, conf, rank: "CUSTOM" };
-        masterPool.push(newTeam);
-        localStorage.setItem('masterTeamsPool', JSON.stringify(masterPool));
+        // Header kolom CSV
+        let csvContent = "data:text/csv;charset=utf-8,No,Nama Peserta,Negara Terundi,Abbr,Konfederasi\n";
 
-        // Sync with active draw if it exists
-        const activeDraw = localStorage.getItem('drawState');
-        if (activeDraw) {
-            const state = JSON.parse(activeDraw);
-            state.availableCountries.push(newTeam);
-            localStorage.setItem('drawState', JSON.stringify(state));
-        }
+        // Tambahkan data baris per baris
+        history.forEach((draw, index) => {
+            const num = index + 1;
+            // Membersihkan nama jika terdapat tanda koma agar tidak merusak format tabel CSV
+            const participantName = draw.participant.replace(/,/g, " ");
+            const countryName = draw.country.name.replace(/,/g, " ");
+            
+            csvContent += `${num},${participantName},${countryName},${draw.country.abbr},${draw.country.conf}\n`;
+        });
 
-        // Clean UI
-        document.getElementById('newName').value = '';
-        document.getElementById('newAbbr').value = '';
-        document.getElementById('newFlag').value = '';
-        toggleAddForm();
-        renderTeams(currentConf, searchInput.value);
+        // Proses download otomatis file .csv (Kompatibel penuh dibuka di Excel)
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Hasil_Draw_Piala_Dunia_2026.csv");
+        document.body.appendChild(link);
+        
+        link.click();
+        document.body.removeChild(link);
     }
 
-    // Run
-    initData();
-    renderTeams();
+    function resetDrawPool() {
+        if(confirm('Are you absolutely sure you want to reset the draw pool? This will delete all history and start from scratch.')){
+            localStorage.removeItem('drawState');
+            window.location.href = 'index.html';
+        }
+    }
 
+    renderLedger();
 </script>
 </body>
 </html>
