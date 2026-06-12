@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>FIFA World Cup 2026 - Tournament Standings</title>
-    <meta name="description" content="Official tournament group standings strictly synchronized with the official FIFA World Cup 2026 grouping format." />
+    <title>FIFA World Cup 2026 - Live Standings</title>
+    <meta name="description" content="Live tournament standings synchronized with Google Sheets." />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -41,158 +41,161 @@
             <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="index.html">Official Draw</a>
             <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
             <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="result.html">Draw Ledger</a>
-            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="standing.html">Tournament Standings</a>
+            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="standing.html">Live Standings</a>
         </div>
     </div>
 </nav>
 
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-12 py-10">
     
-    <div class="mb-8">
-        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full font-bold text-xs mb-3">OFFICIAL STAGE</span>
-        <h1 class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Tournament Standings</h1>
-        
-        <div class="mt-4 p-5 bg-white border border-outline/10 rounded-2xl shadow-sm text-xs text-pitch-dark/80 font-medium">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 gap-x-6">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-500 block"></span>
-                    <span>RESULT DRAWING PHASE 1</span>
-                    </div>
-                </div>
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <span class="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-1 rounded-full font-bold text-xs mb-3 flex items-center w-max gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LIVE DATABASE
+            </span>
+            <h1 class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Live Standings</h1>
+            <p class="text-outline font-medium mt-1">Klasemen otomatis tersinkronisasi <i>real-time</i> dari Google Sheets admin.</p>
+        </div>
+        <button onclick="loadStandings()" class="bg-white border border-outline/20 text-pitch-dark px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-surface-ice transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">sync</span> Refresh Data
+        </button>
+    </div>
+
+    <div class="mb-8 p-5 bg-white border border-outline/10 rounded-2xl shadow-sm text-xs text-pitch-dark/80 font-medium">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 gap-x-6">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 block"></span>
+                <span>= Qualified next round</span>
+            </div>
+            <div class="space-y-1">
+                <div><strong>P</strong> = Matches Played</div>
+                <div><strong>W</strong> = Wins</div>
+                <div><strong>D</strong> = Draws</div>
+            </div>
+            <div class="space-y-1">
+                <div><strong>L</strong> = Loss</div>
+                <div><strong>GF</strong> = Goals For</div>
+                <div><strong>GA</strong> = Goals Against</div>
+            </div>
+            <div class="space-y-1">
+                <div><strong>GD</strong> = Goal Difference</div>
+                <div><strong>Pts</strong> = Points</div>
             </div>
         </div>
     </div>
 
-    <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12"></div>
+    <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+        </div>
 
 </main>
 
 <script>
-    // 1. DATA STRUKTUR 12 GRUP MUTLAK DAN RESMI DARI SITUS FIFA (48 NEGARA)
-    const fifaOfficialGroups = {
-        "A": [
-            { name: "Mexico", flag: "🇲🇽", abbr: "MEX" },
-            { name: "South Africa", flag: "🇿🇦", abbr: "RSA" },
-            { name: "South Korea", flag: "🇰🇷", abbr: "KOR" },
-            { name: "Czech Republic", flag: "🇨🇿", abbr: "CZE" }
-        ],
-        "B": [
-            { name: "Canada", flag: "🇨🇦", abbr: "CAN" },
-            { name: "Bosnia and Herzegovina", flag: "🇧🇦", abbr: "BIH" },
-            { name: "Qatar", flag: "🇶🇦", abbr: "QAT" },
-            { name: "Switzerland", flag: "🇨🇭", abbr: "SUI" }
-        ],
-        "C": [
-            { name: "Brazil", flag: "🇧🇷", abbr: "BRA" },
-            { name: "Morocco", flag: "🇲🇦", abbr: "MAR" },
-            { name: "Haiti", flag: "🇭🇹", abbr: "HAI" },
-            { name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", abbr: "SCO" }
-        ],
-        "D": [
-            { name: "USA", flag: "🇺🇸", abbr: "USA" },
-            { name: "Paraguay", flag: "🇵🇾", abbr: "PAR" },
-            { name: "Australia", flag: "🇦🇺", abbr: "AUS" },
-            { name: "Turkey", flag: "🇹🇷", abbr: "TUR" }
-        ],
-        "E": [
-            { name: "Germany", flag: "🇩🇪", abbr: "GER" },
-            { name: "Curaçao", flag: "🇨🇼", abbr: "CUW" },
-            { name: "Ivory Coast", flag: "🇨🇮", abbr: "CIV" },
-            { name: "Ecuador", flag: "🇪🇨", abbr: "ECU" }
-        ],
-        "F": [
-            { name: "Netherlands", flag: "🇳🇱", abbr: "NED" },
-            { name: "Japan", flag: "🇯🇵", abbr: "JPN" },
-            { name: "Sweden", flag: "🇸🇪", abbr: "SWE" },
-            { name: "Tunisia", flag: "🇹🇳", abbr: "TUN" }
-        ],
-        "G": [
-            { name: "Belgium", flag: "🇧🇪", abbr: "BEL" },
-            { name: "Egypt", flag: "🇪🇬", abbr: "EGY" },
-            { name: "Iran", flag: "🇮🇷", abbr: "IRN" },
-            { name: "New Zealand", flag: "🇳🇿", abbr: "NZL" }
-        ],
-        "H": [
-            { name: "Spain", flag: "🇪🇸", abbr: "ESP" },
-            { name: "Cape Verde", flag: "🇨🇻", abbr: "CPV" },
-            { name: "Saudi Arabia", flag: "🇸🇦", abbr: "KSA" },
-            { name: "Uruguay", flag: "🇺🇾", abbr: "URU" }
-        ],
-        "I": [
-            { name: "France", flag: "🇫🇷", abbr: "FRA" },
-            { name: "Senegal", flag: "🇸🇳", abbr: "SEN" },
-            { name: "Iraq", flag: "🇮🇶", abbr: "IRQ" },
-            { name: "Norway", flag: "🇳🇴", abbr: "NOR" }
-        ],
-        "J": [
-            { name: "Argentina", flag: "🇦🇷", abbr: "ARG" },
-            { name: "Algeria", flag: "🇩🇿", abbr: "ALG" },
-            { name: "Austria", flag: "🇦🇹", abbr: "AUT" },
-            { name: "Jordan", flag: "🇯🇴", abbr: "JOR" }
-        ],
-        "K": [
-            { name: "Portugal", flag: "🇵🇹", abbr: "POR" },
-            { name: "DR Congo", flag: "🇨🇩", abbr: "COD" },
-            { name: "Uzbekistan", flag: "🇺🇿", abbr: "UZB" },
-            { name: "Colombia", flag: "🇨🇴", abbr: "COL" }
-        ],
-        "L": [
-            { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", abbr: "ENG" },
-            { name: "Croatia", flag: "🇭🇷", abbr: "CRO" },
-            { name: "Ghana", flag: "🇬🇭", abbr: "GHA" },
-            { name: "Panama", flag: "🇵🇦", abbr: "PAN" }
-        ]
+    // --- MAPPING BENDERA NEGARA ---
+    const worldTeamsMap = {
+        "Mexico": { flag: "🇲🇽" }, "South Africa": { flag: "🇿🇦" }, "South Korea": { flag: "🇰🇷" }, "Czech Republic": { flag: "🇨🇿" },
+        "Canada": { flag: "🇨🇦" }, "Bosnia and Herzegovina": { flag: "🇧🇦" }, "Qatar": { flag: "🇶🇦" }, "Switzerland": { flag: "🇨🇭" },
+        "Brazil": { flag: "🇧🇷" }, "Morocco": { flag: "🇲🇦" }, "Haiti": { flag: "🇭🇹" }, "Scotland": { flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+        "USA": { flag: "🇺🇸" }, "Paraguay": { flag: "🇵🇾" }, "Australia": { flag: "🇦🇺" }, "Turkey": { flag: "🇹🇷" },
+        "Germany": { flag: "🇩🇪" }, "Curaçao": { flag: "🇨🇼" }, "Ivory Coast": { flag: "🇨🇮" }, "Ecuador": { flag: "🇪🇨" },
+        "Netherlands": { flag: "🇳🇱" }, "Japan": { flag: "🇯🇵" }, "Sweden": { flag: "🇸🇪" }, "Tunisia": { flag: "🇹🇳" },
+        "Belgium": { flag: "🇧🇪" }, "Egypt": { flag: "🇪🇬" }, "Iran": { flag: "🇮🇷" }, "New Zealand": { flag: "🇳🇿" },
+        "Spain": { flag: "🇪🇸" }, "Cape Verde": { flag: "🇨🇻" }, "Saudi Arabia": { flag: "🇸🇦" }, "Uruguay": { flag: "🇺🇾" },
+        "France": { flag: "🇫🇷" }, "Senegal": { flag: "🇸🇳" }, "Iraq": { flag: "🇮🇶" }, "Norway": { flag: "🇳🇴" },
+        "Argentina": { flag: "🇦🇷" }, "Algeria": { flag: "🇩🇿" }, "Austria": { flag: "🇦🇹" }, "Jordan": { flag: "🇯🇴" },
+        "Portugal": { flag: "🇵🇹" }, "DR Congo": { flag: "🇨🇩" }, "Uzbekistan": { flag: "🇺🇿" }, "Colombia": { flag: "🇨🇴" },
+        "England": { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" }, "Croatia": { flag: "🇭🇷" }, "Ghana": { flag: "🇬🇭" }, "Panama": { flag: "🇵🇦" }
     };
 
-    // 2. DATA MANAJER VALID HASIL DRAW EXCEL
-    const validExcelManagers = {
-        "Argentina": "Fernandi Alva Edisound",
-        "Belgium": "Seto",
-        "Senegal": "koy",
-        "Germany": "Naufal",
-        "Morocco": "Allan",
-        "South Korea": "Tias",
-        "Canada": "Rizal Amstrong",
-        "Switzerland": "Nuki",
-        "Brazil": "Ferdi Bikers",
-        "Mexico": "Ubai",
-        "Norway": "Azandy",
-        "Colombia": "Greg",
-        "Turkey": "Azka",
-        "England": "Padil",
-        "Czech Republic": "Prata",
-        "Ecuador": "Aldi",
-        "Netherlands": "Jovi",
-        "Australia": "Mas Anies F5",
-        "Portugal": "Bonge",
-        "USA": "Efrian",
-        "France": "Pangestu",
-        "Austria": "Juan",
-        "Iran": "Bowo",
-        "Croatia": "HillMan",
-        "Egypt": "Lail",
-        "Japan": "Mas Albert",
-        "Uruguay": "Belantong Logrythm",
-        "Spain": "Malvin"
-    };
+    // ======================================================================
+    // ID GOOGLE SHEETS ANDA
+    // Jika data tidak muncul (Koneksi Terputus), ganti teks di bawah ini dengan ID Dokumen yang asli!
+    // ======================================================================
+    const sheetId = "2PACX-1vRJZUK-7BXGtECMDvXGpl0PZxFeLa0SC6x7NYH1RjT-MFqjSAHZHOJUow-bDFVAfPHpOSEpMemsItXX"; 
+    // ======================================================================
+    
+    const sheetURI = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-    function buildOfficialFIFAStandings() {
+    function loadStandings() {
+        const groupsGrid = document.getElementById('groupsGrid');
+        groupsGrid.innerHTML = `
+            <div class="col-span-full text-center py-20 bg-white rounded-2xl border border-outline/10">
+                <span class="material-symbols-outlined animate-spin text-5xl text-vibrant-blue mb-3">refresh</span>
+                <p class="text-outline font-bold">Sinkronisasi data dengan Google Sheets...</p>
+            </div>`;
+
+        fetch(sheetURI)
+            .then(res => {
+                if(!res.ok) throw new Error("Gagal mengambil data dari Google Sheets");
+                return res.text();
+            })
+            .then(data => {
+                // Membersihkan respon Google Viz menjadi format JSON murni
+                const jsonString = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
+                const jsonData = JSON.parse(jsonString);
+                
+                const rows = jsonData.table.rows;
+                const groupsData = {};
+                const groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+                groupNames.forEach(g => groupsData[g] = []);
+
+                rows.forEach(row => {
+                    if (!row || !row.c || !row.c[0] || !row.c[0].v) return;
+                    
+                    const getVal = (colIndex, fallback) => (row.c[colIndex] && row.c[colIndex].v !== null) ? row.c[colIndex].v : fallback;
+                    
+                    let groupLetter = getVal(0, '').toString().trim();
+                    if(groupLetter.toLowerCase() === 'group' || groupLetter === '') return; // Abaikan baris Header
+
+                    const countryName = getVal(1, '').toString().trim();
+                    const managerName = getVal(2, 'Unlisted').toString().trim();
+                    const p = getVal(3, 0);
+                    const w = getVal(4, 0);
+                    const d = getVal(5, 0);
+                    const l = getVal(6, 0);
+                    const gf = getVal(7, 0);
+                    const ga = getVal(8, 0);
+                    const gd = getVal(9, 0);
+                    const pts = getVal(10, 0);
+
+                    if (groupsData[groupLetter]) {
+                        groupsData[groupLetter].push({
+                            name: countryName, manager: managerName, p, w, d, l, gf, ga, gd, pts
+                        });
+                    }
+                });
+
+                renderGroups(groupsData, groupNames);
+            })
+            .catch(err => {
+                console.error("Gagal menarik data:", err);
+                groupsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-20 bg-error-red/5 rounded-2xl border border-error-red/20">
+                        <span class="material-symbols-outlined text-5xl text-error-red mb-3">error</span>
+                        <h3 class="font-bold text-pitch-dark text-lg">Koneksi Terputus</h3>
+                        <p class="text-outline font-medium mt-1">Pastikan ID Google Sheets sudah benar (bukan ID Pubhtml) dan file sudah di "Publish to Web".</p>
+                    </div>`;
+            });
+    }
+
+    function renderGroups(groupsData, groupNames) {
         const groupsGrid = document.getElementById('groupsGrid');
         groupsGrid.innerHTML = '';
 
-        Object.keys(fifaOfficialGroups).forEach(groupLetter => {
-            const teamsInGroup = fifaOfficialGroups[groupLetter];
-            
+        groupNames.forEach(groupLetter => {
+            const teamsInGroup = groupsData[groupLetter];
+            if(!teamsInGroup || teamsInGroup.length === 0) return;
+
             const groupCard = document.createElement('div');
             groupCard.className = 'bg-white rounded-2xl border border-outline/10 shadow-sm p-5 flex flex-col';
             
             let tableRowsHTML = '';
 
-            teamsInGroup.forEach((country, idx) => {
-                const managerName = validExcelManagers[country.name];
-                const displayManager = managerName ? `Man: ${managerName}` : `<span class="text-error-red font-bold bg-error-red/5 px-1.5 py-0.5 rounded text-[10px]">Unlisted</span>`;
+            teamsInGroup.forEach((team, idx) => {
+                const cData = worldTeamsMap[team.name] || { flag: "🏳️" };
+                const displayManager = (team.manager && team.manager !== 'Unlisted') 
+                    ? `Man: ${team.manager}` 
+                    : `<span class="text-error-red font-bold bg-error-red/5 px-1.5 py-0.5 rounded text-[10px]">Unlisted</span>`;
 
-                // Atur warna baris indikator kelolosan kualifikasi (Peringkat 1 & 2 teratas dapat warna penanda hijau lembut di sisi kirinya)
                 const rankIndicatorClass = (idx < 2) ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent';
 
                 tableRowsHTML += `
@@ -200,21 +203,21 @@
                         <td class="py-3 px-2 text-center text-outline font-bold">${idx + 1}</td>
                         <td class="py-3 px-3">
                             <div class="flex items-center gap-3">
-                                <span class="text-2xl drop-shadow-sm">${country.flag}</span>
+                                <span class="text-2xl drop-shadow-sm">${cData.flag}</span>
                                 <div class="truncate">
-                                    <span class="font-bold text-pitch-dark block truncate max-w-[135px] sm:max-w-[200px]">${country.name}</span>
+                                    <span class="font-bold text-pitch-dark block truncate max-w-[135px] sm:max-w-[200px]">${team.name}</span>
                                     <span class="text-[10px] text-outline block truncate">${displayManager}</span>
                                 </div>
                             </div>
                         </td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">0</td>
-                        <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">0</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.p}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.w}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.d}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.l}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.gf}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.ga}</td>
+                        <td class="py-3 px-1 text-center font-mono text-outline">${team.gd}</td>
+                        <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">${team.pts}</td>
                     </tr>
                 `;
             });
@@ -250,7 +253,8 @@
         });
     }
 
-    buildOfficialFIFAStandings();
+    // Jalankan penarikan data saat halaman pertama kali dibuka
+    loadStandings();
 </script>
 </body>
 </html>
