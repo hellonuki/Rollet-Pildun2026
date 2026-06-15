@@ -4,28 +4,12 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>FIFA World Cup 2026 - Live Standings</title>
-    <meta name="description" content="Live tournament standings synchronized with Google Sheets." />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "pitch-dark": "#020F2A",
-                        "fifa-blue": "#003284",
-                        "vibrant-blue": "#0A84FF",
-                        "prestige-gold": "#D4AF37",
-                        "error-red": "#F43056",
-                        "surface-ice": "#EEF2FB",
-                        "on-surface": "#0d1b36",
-                        "outline": "#747683",
-                        "primary": "#001e57"
-                    }
-                }
-            }
+            theme: { extend: { colors: { "pitch-dark": "#020F2A", "prestige-gold": "#D4AF37", "surface-ice": "#EEF2FB", "primary": "#001e57" } } }
         }
     </script>
 </head>
@@ -33,53 +17,30 @@
 
 <nav class="bg-pitch-dark shadow-lg sticky top-0 z-50 w-full border-b border-white/10">
     <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-7xl mx-auto h-20">
-        <a href="index.html" class="font-[Outfit] font-black text-prestige-gold hover:text-white transition-colors flex items-center gap-3 text-2xl tracking-tighter">
-            <span class="material-symbols-outlined text-3xl">public</span>
-            FIFA WORLD CUP™
+        <a href="index.html" class="font-[Outfit] font-black text-prestige-gold text-2xl tracking-tighter flex items-center gap-3">
+            <span class="material-symbols-outlined text-3xl">public</span> FIFA WORLD CUP™
         </a>
-        <div class="hidden md:flex items-center gap-8">
-            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="index.html">Official Draw</a>
-            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="teams.html">World Cup Teams</a>
-            <a class="font-medium text-white/70 hover:text-white transition-colors cursor-pointer" href="result.html">Draw Ledger</a>
-            <a class="font-bold text-white border-b-2 border-prestige-gold pb-1 cursor-pointer transition-all duration-200" href="standing.html">Live Standings</a>
+        <div class="hidden md:flex items-center gap-8 text-white/70 font-medium">
+            <a href="index.html">Official Draw</a>
+            <a href="standing.html" class="text-white font-bold border-b-2 border-prestige-gold pb-1">Live Standings</a>
         </div>
     </div>
 </nav>
 
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-12 py-10">
-    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="mb-8 flex justify-between items-end">
         <div>
-            <span class="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-1 rounded-full font-bold text-xs mb-3 flex items-center w-max gap-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LIVE DATABASE
-            </span>
-            <h1 class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Live Standings</h1>
-            <p class="text-outline font-medium mt-1">Data sinkronisasi: Statistik otomatis dari API, Nama Manajer dari Spreadsheet.</p>
+            <h1 class="font-[Outfit] text-4xl font-black text-primary uppercase">Live Standings</h1>
+            <p class="text-gray-500 font-medium">Data sinkronisasi otomatis dari Google Sheets.</p>
         </div>
-        <button onclick="loadStandings()" class="bg-white border border-outline/20 text-pitch-dark px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-surface-ice transition-all flex items-center gap-2">
+        <button onclick="loadStandings()" class="bg-white border px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-gray-100 flex items-center gap-2">
             <span class="material-symbols-outlined text-lg">sync</span> Refresh Data
         </button>
     </div>
-
-    <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
-        </div>
+    <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8"></div>
 </main>
 
 <script>
-    const worldTeamsMap = {
-        "Mexico": { flag: "🇲🇽" }, "South Africa": { flag: "🇿🇦" }, "South Korea": { flag: "🇰🇷" }, "Czech Republic": { flag: "🇨🇿" },
-        "Canada": { flag: "🇨🇦" }, "Bosnia and Herzegovina": { flag: "🇧🇦" }, "Qatar": { flag: "🇶🇦" }, "Switzerland": { flag: "🇨🇭" },
-        "Brazil": { flag: "🇧🇷" }, "Morocco": { flag: "🇲🇦" }, "Haiti": { flag: "🇭🇹" }, "Scotland": { flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
-        "USA": { flag: "🇺🇸" }, "Paraguay": { flag: "🇵🇾" }, "Australia": { flag: "🇦🇺" }, "Turkey": { flag: "🇹🇷" },
-        "Germany": { flag: "🇩🇪" }, "Curaçao": { flag: "🇨🇼" }, "Ivory Coast": { flag: "🇨🇮" }, "Ecuador": { flag: "🇪🇨" },
-        "Netherlands": { flag: "🇳🇱" }, "Japan": { flag: "🇯🇵" }, "Sweden": { flag: "🇸🇪" }, "Tunisia": { flag: "🇹🇳" },
-        "Belgium": { flag: "🇧🇪" }, "Egypt": { flag: "🇪🇬" }, "Iran": { flag: "🇮🇷" }, "New Zealand": { flag: "🇳🇿" },
-        "Spain": { flag: "🇪🇸" }, "Cape Verde": { flag: "🇨🇻" }, "Saudi Arabia": { flag: "🇸🇦" }, "Uruguay": { flag: "🇺🇾" },
-        "France": { flag: "🇫🇷" }, "Senegal": { flag: "🇸🇳" }, "Iraq": { flag: "🇮🇶" }, "Norway": { flag: "🇳🇴" },
-        "Argentina": { flag: "🇦🇷" }, "Algeria": { flag: "🇩🇿" }, "Austria": { flag: "🇦🇹" }, "Jordan": { flag: "🇯🇴" },
-        "Portugal": { flag: "🇵🇹" }, "DR Congo": { flag: "🇨🇩" }, "Uzbekistan": { flag: "🇺🇿" }, "Colombia": { flag: "🇨🇴" },
-        "England": { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" }, "Croatia": { flag: "🇭🇷" }, "Ghana": { flag: "🇬🇭" }, "Panama": { flag: "🇵🇦" }
-    };
-
     const sheetId = "1aKtJzVEGF7nidsJknMKL1X7vLMbZ0MEXddKRpiA_Vng"; 
     const gid = "1423494051";
     const sheetURI = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
@@ -92,15 +53,16 @@
                 const jsonData = JSON.parse(jsonString);
                 const rows = jsonData.table.rows;
                 const groupsData = {};
-                const groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-                groupNames.forEach(g => groupsData[g] = []);
 
                 rows.forEach(row => {
-                    if (!row || !row.c || !row.c[0] || !row.c[0].v) return;
+                    if (!row || !row.c || !row.c[0] || row.c[0].v === null) return;
+                    
                     const getVal = (idx, fallback) => (row.c[idx] && row.c[idx].v !== null) ? row.c[idx].v : fallback;
                     
-                    let group = getVal(0, '').toString().trim();
-                    if(group === 'Group') return; 
+                    let group = getVal(0, 'Unknown').toString().trim();
+                    if(group.toLowerCase() === 'group') return; 
+
+                    if (!groupsData[group]) groupsData[group] = [];
 
                     groupsData[group].push({
                         name: getVal(1, ''),
@@ -109,7 +71,7 @@
                         gf: getVal(7, 0), ga: getVal(8, 0), gd: getVal(9, 0), pts: getVal(10, 0)
                     });
                 });
-                renderGroups(groupsData, groupNames);
+                renderGroups(groupsData, Object.keys(groupsData).sort());
             });
     }
 
@@ -118,34 +80,26 @@
         groupsGrid.innerHTML = '';
         groupNames.forEach(groupLetter => {
             let tableRowsHTML = groupsData[groupLetter].map((team, idx) => `
-                <tr class="border-b border-outline/5 hover:bg-surface-ice/50 text-xs font-semibold ${idx < 2 ? 'border-l-4 border-emerald-500' : ''}">
-                    <td class="py-3 px-2 text-center text-outline font-bold">${idx + 1}</td>
+                <tr class="border-b text-xs">
+                    <td class="py-3 px-2 text-center font-bold">${idx + 1}</td>
                     <td class="py-3 px-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">${worldTeamsMap[team.name]?.flag || "🏳️"}</span>
-                            <div>
-                                <span class="font-bold text-pitch-dark block">${team.name}</span>
-                                <span class="text-[10px] text-outline block">Man: ${team.manager}</span>
-                            </div>
-                        </div>
+                        <span class="font-bold block">${team.name}</span>
+                        <span class="text-[10px] text-gray-500">Man: ${team.manager}</span>
                     </td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.p}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.w}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.d}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.l}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.gf}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.ga}</td>
-                    <td class="py-3 px-1 text-center font-mono text-outline">${team.gd}</td>
-                    <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">${team.pts}</td>
+                    <td class="py-3 px-1 text-center font-mono">${team.p}</td>
+                    <td class="py-3 px-1 text-center font-mono">${team.w}</td>
+                    <td class="py-3 px-1 text-center font-mono">${team.d}</td>
+                    <td class="py-3 px-1 text-center font-mono">${team.l}</td>
+                    <td class="py-3 px-2 text-center font-mono font-bold">${team.pts}</td>
                 </tr>
             `).join('');
 
             groupsGrid.innerHTML += `
-                <div class="bg-white rounded-2xl border border-outline/10 shadow-sm p-5">
-                    <div class="bg-primary text-white px-4 py-2 rounded-xl font-black text-sm mb-3">GRUP ${groupLetter}</div>
+                <div class="bg-white rounded-2xl border shadow-sm p-5">
+                    <div class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm mb-3 w-max">${groupLetter}</div>
                     <table class="w-full text-left">
-                        <thead class="text-[10px] font-bold text-outline uppercase bg-surface-ice/30">
-                            <tr><th class="py-2 px-2 text-center">Pos</th><th>Tim & Manajer</th><th class="py-2 px-1 text-center">P</th><th class="py-2 px-1 text-center">W</th><th class="py-2 px-1 text-center">D</th><th class="py-2 px-1 text-center">L</th><th class="py-2 px-1 text-center">GF</th><th class="py-2 px-1 text-center">GA</th><th class="py-2 px-1 text-center">GD</th><th class="py-2 px-2 text-center text-primary">Pts</th></tr>
+                        <thead class="text-[10px] uppercase bg-gray-50 text-gray-500">
+                            <tr><th class="p-2">Pos</th><th>Tim/Manajer</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
                         </thead>
                         <tbody>${tableRowsHTML}</tbody>
                     </table>
