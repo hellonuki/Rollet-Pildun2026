@@ -115,52 +115,42 @@
 
     function loadStandings() {
         const groupsGrid = document.getElementById('groupsGrid');
-        groupsGrid.innerHTML = `
-            <div class="col-span-full text-center py-20 bg-white rounded-2xl border border-outline/10">
-                <span class="material-symbols-outlined animate-spin text-5xl text-vibrant-blue mb-3">refresh</span>
-                <p class="text-outline font-bold">Sinkronisasi data dengan Google Sheets...</p>
-            </div>`;
+        groupsGrid.innerHTML = `<div class="col-span-full text-center py-10">Sinkronisasi data...</div>`;
 
         fetch(sheetURI)
-            .then(res => {
-                if(!res.ok) throw new Error("Gagal mengambil data dari Google Sheets");
-                return res.text();
-            })
+            .then(res => res.text())
             .then(data => {
                 const jsonString = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
                 const jsonData = JSON.parse(jsonString);
-                
                 const rows = jsonData.table.rows;
                 const groupsData = {};
-                const groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-                groupNames.forEach(g => groupsData[g] = []);
 
                 rows.forEach(row => {
-                    if (!row || !row.c || !row.c[0] || !row.c[0].v) return;
+                    // Cek jika baris kosong
+                    if (!row || !row.c || !row.c[0] || row.c[0].v === null) return;
                     
-                    const getVal = (colIndex, fallback) => (row.c[colIndex] && row.c[colIndex].v !== null) ? row.c[colIndex].v : fallback;
+                    const getVal = (idx, fallback) => (row.c[idx] && row.c[idx].v !== null) ? row.c[idx].v : fallback;
                     
-                    let groupLetter = getVal(0, '').toString().trim();
-                    if(groupLetter.toLowerCase() === 'group' || groupLetter === '') return; 
+                    let group = getVal(0, '').toString().trim();
+                    // Lewati jika baris tersebut adalah header
+                    if(group.toLowerCase() === 'group' || group === '') return; 
 
-                    const countryName = getVal(1, '').toString().trim();
-                    const managerName = getVal(2, 'Unlisted').toString().trim();
-                    const p = getVal(3, 0);
-                    const w = getVal(4, 0);
-                    const d = getVal(5, 0);
-                    const l = getVal(6, 0);
-                    const gf = getVal(7, 0);
-                    const ga = getVal(8, 0);
-                    const gd = getVal(9, 0);
-                    const pts = getVal(10, 0);
+                    if (!groupsData[group]) groupsData[group] = [];
 
-                    if (groupsData[groupLetter]) {
-                        groupsData[groupLetter].push({
-                            name: countryName, manager: managerName, p, w, d, l, gf, ga, gd, pts
-                        });
-                    }
+                    groupsData[group].push({
+                        name: getVal(1, 'Unknown'),
+                        manager: getVal(2, 'Unlisted'),
+                        p: getVal(3, 0), w: getVal(4, 0), d: getVal(5, 0), l: getVal(6, 0),
+                        gf: getVal(7, 0), ga: getVal(8, 0), gd: getVal(9, 0), pts: getVal(10, 0)
+                    });
                 });
-
+                renderGroups(groupsData, Object.keys(groupsData).sort());
+            })
+            .catch(err => {
+                console.error(err);
+                groupsGrid.innerHTML = `<div class="col-span-full text-center py-10 text-red-500">Gagal memuat data. Pastikan sheet sudah di-Publish to Web.</div>`;
+            });
+    }
                 renderGroups(groupsData, groupNames);
             })
             .catch(err => {
