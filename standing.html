@@ -47,50 +47,24 @@
 </nav>
 
 <main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-12 py-10">
-    
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
             <span class="inline-block bg-emerald-500/10 text-emerald-600 px-4 py-1 rounded-full font-bold text-xs mb-3 flex items-center w-max gap-1">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LIVE DATABASE
             </span>
             <h1 class="font-[Outfit] text-4xl font-black tracking-tight text-primary uppercase">Live Standings</h1>
-            <p class="text-outline font-medium mt-1">Klasemen otomatis tersinkronisasi <i>real-time</i> dari Google Sheets admin.</p>
+            <p class="text-outline font-medium mt-1">Data sinkronisasi: Statistik otomatis dari API, Nama Manajer dari Spreadsheet.</p>
         </div>
         <button onclick="loadStandings()" class="bg-white border border-outline/20 text-pitch-dark px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-surface-ice transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-lg">sync</span> Refresh Data
         </button>
     </div>
 
-    <div class="mb-8 p-5 bg-white border border-outline/10 rounded-2xl shadow-sm text-xs text-pitch-dark/80 font-medium">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 gap-x-6">
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-emerald-500 block"></span>
-                <span>= Qualified next round</span>
-            </div>
-            <div class="space-y-1">
-                <div><strong>P</strong> = Matches Played</div>
-                <div><strong>W</strong> = Wins</div>
-                <div><strong>D</strong> = Draws</div>
-            </div>
-            <div class="space-y-1">
-                <div><strong>L</strong> = Loss</div>
-                <div><strong>GF</strong> = Goals For</div>
-                <div><strong>GA</strong> = Goals Against</div>
-            </div>
-            <div class="space-y-1">
-                <div><strong>GD</strong> = Goal Difference</div>
-                <div><strong>Pts</strong> = Points</div>
-            </div>
-        </div>
-    </div>
-
     <div id="groupsGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
         </div>
-
 </main>
 
 <script>
-    // --- MAPPING BENDERA NEGARA ---
     const worldTeamsMap = {
         "Mexico": { flag: "🇲🇽" }, "South Africa": { flag: "🇿🇦" }, "South Korea": { flag: "🇰🇷" }, "Czech Republic": { flag: "🇨🇿" },
         "Canada": { flag: "🇨🇦" }, "Bosnia and Herzegovina": { flag: "🇧🇦" }, "Qatar": { flag: "🇶🇦" }, "Switzerland": { flag: "🇨🇭" },
@@ -106,30 +80,16 @@
         "England": { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" }, "Croatia": { flag: "🇭🇷" }, "Ghana": { flag: "🇬🇭" }, "Panama": { flag: "🇵🇦" }
     };
 
-    // ======================================================================
-    // KONFIGURASI SHEET (FOKUS KE TAB "DataAPI")
-    // ======================================================================
     const sheetId = "1aKtJzVEGF7nidsJknMKL1X7vLMbZ0MEXddKRpiA_Vng"; 
-    const gid = "1423494051"; // GID Tab DataAPI Anda
+    const gid = "1423494051";
     const sheetURI = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
 
     function loadStandings() {
-        const groupsGrid = document.getElementById('groupsGrid');
-        groupsGrid.innerHTML = `
-            <div class="col-span-full text-center py-20 bg-white rounded-2xl border border-outline/10">
-                <span class="material-symbols-outlined animate-spin text-5xl text-vibrant-blue mb-3">refresh</span>
-                <p class="text-outline font-bold">Sinkronisasi data dengan Google Sheets...</p>
-            </div>`;
-
         fetch(sheetURI)
-            .then(res => {
-                if(!res.ok) throw new Error("Gagal mengambil data dari Google Sheets");
-                return res.text();
-            })
+            .then(res => res.text())
             .then(data => {
                 const jsonString = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
                 const jsonData = JSON.parse(jsonString);
-                
                 const rows = jsonData.table.rows;
                 const groupsData = {};
                 const groupNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
@@ -137,120 +97,61 @@
 
                 rows.forEach(row => {
                     if (!row || !row.c || !row.c[0] || !row.c[0].v) return;
+                    const getVal = (idx, fallback) => (row.c[idx] && row.c[idx].v !== null) ? row.c[idx].v : fallback;
                     
-                    const getVal = (colIndex, fallback) => (row.c[colIndex] && row.c[colIndex].v !== null) ? row.c[colIndex].v : fallback;
-                    
-                    let groupLetter = getVal(0, '').toString().trim();
-                    if(groupLetter.toLowerCase() === 'group' || groupLetter === '') return; 
+                    let group = getVal(0, '').toString().trim();
+                    if(group === 'Group') return; 
 
-                    const countryName = getVal(1, '').toString().trim();
-                    const managerName = getVal(2, 'Unlisted').toString().trim();
-                    const p = getVal(3, 0);
-                    const w = getVal(4, 0);
-                    const d = getVal(5, 0);
-                    const l = getVal(6, 0);
-                    const gf = getVal(7, 0);
-                    const ga = getVal(8, 0);
-                    const gd = getVal(9, 0);
-                    const pts = getVal(10, 0);
-
-                    if (groupsData[groupLetter]) {
-                        groupsData[groupLetter].push({
-                            name: countryName, manager: managerName, p, w, d, l, gf, ga, gd, pts
-                        });
-                    }
+                    groupsData[group].push({
+                        name: getVal(1, ''),
+                        manager: getVal(2, 'Unlisted'),
+                        p: getVal(3, 0), w: getVal(4, 0), d: getVal(5, 0), l: getVal(6, 0),
+                        gf: getVal(7, 0), ga: getVal(8, 0), gd: getVal(9, 0), pts: getVal(10, 0)
+                    });
                 });
-
                 renderGroups(groupsData, groupNames);
-            })
-            .catch(err => {
-                console.error("Gagal menarik data:", err);
-                groupsGrid.innerHTML = `
-                    <div class="col-span-full text-center py-20 bg-error-red/5 rounded-2xl border border-error-red/20">
-                        <span class="material-symbols-outlined text-5xl text-error-red mb-3">error</span>
-                        <h3 class="font-bold text-pitch-dark text-lg">Koneksi Terputus</h3>
-                        <p class="text-outline font-medium mt-1">Pastikan tab DataAPI sudah di "Publish to Web".</p>
-                    </div>`;
             });
     }
 
     function renderGroups(groupsData, groupNames) {
         const groupsGrid = document.getElementById('groupsGrid');
         groupsGrid.innerHTML = '';
-
         groupNames.forEach(groupLetter => {
-            const teamsInGroup = groupsData[groupLetter];
-            if(!teamsInGroup || teamsInGroup.length === 0) return;
-
-            const groupCard = document.createElement('div');
-            groupCard.className = 'bg-white rounded-2xl border border-outline/10 shadow-sm p-5 flex flex-col';
-            
-            let tableRowsHTML = '';
-
-            teamsInGroup.forEach((team, idx) => {
-                const cData = worldTeamsMap[team.name] || { flag: "🏳️" };
-                const displayManager = (team.manager && team.manager !== 'Unlisted') 
-                    ? `Man: ${team.manager}` 
-                    : `<span class="text-error-red font-bold bg-error-red/5 px-1.5 py-0.5 rounded text-[10px]">Unlisted</span>`;
-
-                const rankIndicatorClass = (idx < 2) ? 'border-l-4 border-emerald-500' : 'border-l-4 border-transparent';
-
-                tableRowsHTML += `
-                    <tr class="border-b border-outline/5 hover:bg-surface-ice/50 transition-colors text-xs font-semibold ${rankIndicatorClass}">
-                        <td class="py-3 px-2 text-center text-outline font-bold">${idx + 1}</td>
-                        <td class="py-3 px-3">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl drop-shadow-sm">${cData.flag}</span>
-                                <div class="truncate">
-                                    <span class="font-bold text-pitch-dark block truncate max-w-[135px] sm:max-w-[200px]">${team.name}</span>
-                                    <span class="text-[10px] text-outline block truncate">${displayManager}</span>
-                                </div>
+            let tableRowsHTML = groupsData[groupLetter].map((team, idx) => `
+                <tr class="border-b border-outline/5 hover:bg-surface-ice/50 text-xs font-semibold ${idx < 2 ? 'border-l-4 border-emerald-500' : ''}">
+                    <td class="py-3 px-2 text-center text-outline font-bold">${idx + 1}</td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${worldTeamsMap[team.name]?.flag || "🏳️"}</span>
+                            <div>
+                                <span class="font-bold text-pitch-dark block">${team.name}</span>
+                                <span class="text-[10px] text-outline block">Man: ${team.manager}</span>
                             </div>
-                        </td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.p}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.w}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.d}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.l}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.gf}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.ga}</td>
-                        <td class="py-3 px-1 text-center font-mono text-outline">${team.gd}</td>
-                        <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">${team.pts}</td>
-                    </tr>
-                `;
-            });
+                        </div>
+                    </td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.p}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.w}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.d}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.l}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.gf}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.ga}</td>
+                    <td class="py-3 px-1 text-center font-mono text-outline">${team.gd}</td>
+                    <td class="py-3 px-2 text-center font-mono font-bold text-primary bg-primary/5 rounded-md">${team.pts}</td>
+                </tr>
+            `).join('');
 
-            groupCard.innerHTML = `
-                <div class="bg-primary text-white px-4 py-2.5 rounded-xl font-[Outfit] font-black tracking-wide text-sm flex justify-between items-center mb-3 shadow-inner">
-                    <span>GRUP ${groupLetter}</span>
-                    <span class="text-[10px] text-prestige-gold uppercase tracking-widest font-bold">FIFA World Cup</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-outline/10 text-[10px] font-bold text-outline uppercase tracking-wider bg-surface-ice/30">
-                                <th class="py-2 px-2 text-center w-8">Pos</th>
-                                <th class="py-2 px-3">Tim & Manajer</th>
-                                <th class="py-2 px-1 text-center w-8" title="Matches Played">P</th>
-                                <th class="py-2 px-1 text-center w-8" title="Wins">W</th>
-                                <th class="py-2 px-1 text-center w-8" title="Draws">D</th>
-                                <th class="py-2 px-1 text-center w-8" title="Loss">L</th>
-                                <th class="py-2 px-1 text-center w-8" title="Goals For">GF</th>
-                                <th class="py-2 px-1 text-center w-8" title="Goals Against">GA</th>
-                                <th class="py-2 px-1 text-center w-8" title="Goal Difference">GD</th>
-                                <th class="py-2 px-2 text-center w-10 bg-primary/5 rounded-t-md text-primary">Pts</th>
-                            </tr>
+            groupsGrid.innerHTML += `
+                <div class="bg-white rounded-2xl border border-outline/10 shadow-sm p-5">
+                    <div class="bg-primary text-white px-4 py-2 rounded-xl font-black text-sm mb-3">GRUP ${groupLetter}</div>
+                    <table class="w-full text-left">
+                        <thead class="text-[10px] font-bold text-outline uppercase bg-surface-ice/30">
+                            <tr><th class="py-2 px-2 text-center">Pos</th><th>Tim & Manajer</th><th class="py-2 px-1 text-center">P</th><th class="py-2 px-1 text-center">W</th><th class="py-2 px-1 text-center">D</th><th class="py-2 px-1 text-center">L</th><th class="py-2 px-1 text-center">GF</th><th class="py-2 px-1 text-center">GA</th><th class="py-2 px-1 text-center">GD</th><th class="py-2 px-2 text-center text-primary">Pts</th></tr>
                         </thead>
-                        <tbody>
-                            ${tableRowsHTML}
-                        </tbody>
+                        <tbody>${tableRowsHTML}</tbody>
                     </table>
-                </div>
-            `;
-            groupsGrid.appendChild(groupCard);
+                </div>`;
         });
     }
-
-    // Jalankan penarikan data saat halaman pertama kali dibuka
     loadStandings();
 </script>
 </body>
