@@ -41,56 +41,44 @@
 </main>
 
 <script>
-    // 1. API TheSportsDB (Klasemen)
     const sportsDB_URI = "https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=4429&s=2026";
-    // 2. Google Sheets (Manajer)
     const sheetURI = "https://docs.google.com/spreadsheets/d/1aKtJzVEGF7nidsJknMKL1X7vLMbZ0MEXddKRpiA_Vng/gviz/tq?tqx=out:json&gid=1423494051";
 
     async function loadStandings() {
-    const grid = document.getElementById('groupsGrid');
-    grid.innerHTML = '<div class="text-center py-10">Sinkronisasi Data...</div>';
+        const grid = document.getElementById('groupsGrid');
+        grid.innerHTML = '<div class="text-center py-10">Sinkronisasi Data...</div>';
 
-    try {
-        const [apiRes, sheetRes] = await Promise.all([
-            fetch(sportsDB_URI),
-            fetch(sheetURI).then(r => r.text())
-        ]);
+        try {
+            const [apiRes, sheetRes] = await Promise.all([
+                fetch(sportsDB_URI),
+                fetch(sheetURI).then(r => r.text())
+            ]);
 
-        const apiData = await apiRes.json();
-        const sheetJson = JSON.parse(sheetRes.substring(sheetRes.indexOf("{"), sheetRes.lastIndexOf("}") + 1));
+            const apiData = await apiRes.json();
+            const sheetJson = JSON.parse(sheetRes.substring(sheetRes.indexOf("{"), sheetRes.lastIndexOf("}") + 1));
 
-        // 1. Buat mapping skor dari API: { "Mexico": {p:1, w:1...} }
-        const apiMap = {};
-        apiData.table.forEach(t => {
-            apiMap[t.strTeam.toLowerCase().trim()] = { p: t.intPlayed, w: t.intWin, d: t.intDraw, l: t.intLoss, pts: t.intPoints };
-        });
-
-        // 2. Olah Data dari Sheets (Master List)
-        const groups = {};
-        sheetJson.table.rows.forEach(row => {
-            if (!row.c[0] || !row.c[1]) return;
-            let g = row.c[0].v;
-            let teamName = row.c[1].v;
-            
-            if (!groups[g]) groups[g] = [];
-            
-            // Ambil skor dari API, jika tidak ada (belum main), set 0
-            const stats = apiMap[teamName.toLowerCase().trim()] || { p: 0, w: 0, d: 0, l: 0, pts: 0 };
-            
-            groups[g].push({
-                name: teamName,
-                manager: row.c[2]?.v || "Unlisted",
-                ...stats
+            const apiMap = {};
+            apiData.table.forEach(t => {
+                apiMap[t.strTeam.toLowerCase().trim()] = { p: t.intPlayed, w: t.intWin, d: t.intDraw, l: t.intLoss, pts: t.intPoints };
             });
-        });
 
-        render(groups);
-    } catch (err) {
-        grid.innerHTML = '<div class="text-red-500 text-center py-10">Gagal memuat data.</div>';
-    }
-}
+            const groups = {};
+            sheetJson.table.rows.forEach(row => {
+                if (!row.c[0] || !row.c[1]) return;
+                let g = row.c[0].v;
+                let teamName = row.c[1].v;
+                
+                if (!groups[g]) groups[g] = [];
+                const stats = apiMap[teamName.toLowerCase().trim()] || { p: 0, w: 0, d: 0, l: 0, pts: 0 };
+                
+                groups[g].push({
+                    name: teamName,
+                    manager: row.c[2]?.v || "Unlisted",
+                    ...stats
+                });
+            });
 
-            // Tampilkan ke layar
+            // RENDER DATA
             grid.innerHTML = Object.keys(groups).sort().map(g => `
                 <div class="bg-white rounded-2xl border p-5 shadow-sm">
                     <div class="bg-primary text-white px-4 py-2 rounded-xl font-black text-sm mb-3">${g}</div>
@@ -113,6 +101,7 @@
                 </div>`).join('');
 
         } catch (err) {
+            console.error(err);
             grid.innerHTML = '<div class="text-center py-10 text-red-500">Gagal memuat data. Periksa koneksi atau Publish Sheets Anda.</div>';
         }
     }
