@@ -47,39 +47,48 @@
     const sheetURI = "https://docs.google.com/spreadsheets/d/1aKtJzVEGF7nidsJknMKL1X7vLMbZ0MEXddKRpiA_Vng/gviz/tq?tqx=out:json&gid=1423494051";
 
     async function loadStandings() {
-        const grid = document.getElementById('groupsGrid');
-        grid.innerHTML = '<div class="text-center py-10">Mengambil data dari API...</div>';
+    const grid = document.getElementById('groupsGrid');
+    grid.innerHTML = '<div class="text-center py-10">Sinkronisasi Data...</div>';
 
-        try {
-            // Ambil kedua data sekaligus
-            const [apiRes, sheetRes] = await Promise.all([
-                fetch(sportsDB_URI),
-                fetch(sheetURI).then(r => r.text())
-            ]);
+    try {
+        const [apiRes, sheetRes] = await Promise.all([
+            fetch(sportsDB_URI),
+            fetch(sheetURI).then(r => r.text())
+        ]);
 
-            const apiData = await apiRes.json();
-            const sheetJson = JSON.parse(sheetRes.substring(sheetRes.indexOf("{"), sheetRes.lastIndexOf("}") + 1));
+        const apiData = await apiRes.json();
+        const sheetJson = JSON.parse(sheetRes.substring(sheetRes.indexOf("{"), sheetRes.lastIndexOf("}") + 1));
 
-            // Mapping Manajer
-            const managerMap = {};
-            sheetJson.table.rows.forEach(row => {
-                if (row.c[1] && row.c[2]) {
-                    managerMap[row.c[1].v.toString().toLowerCase().trim()] = row.c[2].v;
-                }
+        // 1. Buat mapping skor dari API: { "Mexico": {p:1, w:1...} }
+        const apiMap = {};
+        apiData.table.forEach(t => {
+            apiMap[t.strTeam.toLowerCase().trim()] = { p: t.intPlayed, w: t.intWin, d: t.intDraw, l: t.intLoss, pts: t.intPoints };
+        });
+
+        // 2. Olah Data dari Sheets (Master List)
+        const groups = {};
+        sheetJson.table.rows.forEach(row => {
+            if (!row.c[0] || !row.c[1]) return;
+            let g = row.c[0].v;
+            let teamName = row.c[1].v;
+            
+            if (!groups[g]) groups[g] = [];
+            
+            // Ambil skor dari API, jika tidak ada (belum main), set 0
+            const stats = apiMap[teamName.toLowerCase().trim()] || { p: 0, w: 0, d: 0, l: 0, pts: 0 };
+            
+            groups[g].push({
+                name: teamName,
+                manager: row.c[2]?.v || "Unlisted",
+                ...stats
             });
+        });
 
-            // Olah Data Klasemen
-            const groups = {};
-            apiData.table.forEach(team => {
-                let g = team.strGroup;
-                if (!groups[g]) groups[g] = [];
-                groups[g].push({
-                    name: team.strTeam,
-                    manager: managerMap[team.strTeam.toLowerCase().trim()] || "Unlisted",
-                    p: team.intPlayed, w: team.intWin, d: team.intDraw, l: team.intLoss,
-                    pts: team.intPoints
-                });
-            });
+        render(groups);
+    } catch (err) {
+        grid.innerHTML = '<div class="text-red-500 text-center py-10">Gagal memuat data.</div>';
+    }
+}
 
             // Tampilkan ke layar
             grid.innerHTML = Object.keys(groups).sort().map(g => `
